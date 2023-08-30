@@ -7,7 +7,9 @@
  
 ## Run
 
-Install the necessary python package:
+You need to have [Python 3.11](https://www.python.org/downloads/) installed, so that the TOML parser is available.
+
+Install the necessary python package used to annotate the PDF:
 
 `pip3 install pdf_annotate`
 
