@@ -10,7 +10,11 @@ class Drawer:
     measurements into PDF coordinates.
     """
 
-    def __init__(self, paper_config, grid_config, drawing_config) -> None:
+    def __init__(self, config) -> None:
+        paper_config = config['paper']
+        grid_config = config['grid']
+        drawing_config = config['drawing']
+
         self.a = PdfAnnotator(paper_config['file'])
         self.a.set_page_dimensions(
             (paper_config['width'], paper_config['height']), 0)
@@ -20,6 +24,7 @@ class Drawer:
 
         self.cross_size = drawing_config['cross_size']
         self.axis_tick_size = drawing_config['axis_tick_size']
+
         self.num_x_blocks = grid_config['num_x_blocks']
         self.num_y_blocks = grid_config['num_y_blocks']
         self.num_x_block_per_super_block = grid_config['num_x_blocks_per_super_block']
