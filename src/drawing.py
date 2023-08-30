@@ -39,15 +39,15 @@ class Drawer:
         self._draw_axis(Axis.VERTICAL)
 
         for m in measurements:
-            self._draw_datapoint(m.x, m.y)
+            self._draw_datapoint(m)
             if m.has_error_bounds():
-                self._draw_error_bar(m.x, m.y, m.lower_error, m.upper_error)
+                self._draw_error_bar(m)
 
-    def _draw_error_bar(self, x, y, lower_bound, upper_bound):
+    def _draw_error_bar(self, m: Measurement):
         coords_top = self.transformation.get_pdf_coords_from_data_point(
-            x, y+upper_bound)
+            m.x, m.y + m.upper_error)
         coords_bottom = self.transformation.get_pdf_coords_from_data_point(
-            x, y-lower_bound)
+            m.x, m.y - m.lower_error)
 
         # vertical line
         self.a.add_annotation(
@@ -74,8 +74,8 @@ class Drawer:
             Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
         )
 
-    def _draw_datapoint(self, x, y):
-        coords = self.transformation.get_pdf_coords_from_data_point(x, y)
+    def _draw_datapoint(self, m: Measurement):
+        coords = self.transformation.get_pdf_coords_from_data_point(m.x, m.y)
         points = [(coords[0]-self.cross_size/2, coords[1]-self.cross_size/2),
                   (coords[0]+self.cross_size/2, coords[1]+self.cross_size/2)]
         self.a.add_annotation(
