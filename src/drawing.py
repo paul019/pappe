@@ -1,7 +1,7 @@
 from pdf_annotate import PdfAnnotator, Location, Appearance
 
 from measurement import Measurement
-from transformation import Axis, Transformation
+from transformer import Axis, Transformer
 
 
 class Drawer:
@@ -11,7 +11,7 @@ class Drawer:
             (paper_config['width'], paper_config['height']), 0)
 
         # outsource should_contain_origin (see "False" params here)
-        self.transformation = Transformation(grid_config, False, False)
+        self.trafo = Transformer(grid_config, False, False)
 
         self.cross_size = drawing_config['cross_size']
         self.axis_tick_size = drawing_config['axis_tick_size']
@@ -24,7 +24,7 @@ class Drawer:
         self.a.write(path)
 
     def draw(self, measurements: list[Measurement]):
-        measurements = self.transformation.analyze_and_offset_measurements(
+        measurements = self.trafo.analyze_and_offset_measurements(
             measurements)
 
         for i in range(int(self.num_x_blocks / self.num_x_block_per_super_block) + 1):
@@ -44,9 +44,9 @@ class Drawer:
                 self._draw_error_bar(m)
 
     def _draw_error_bar(self, m: Measurement):
-        coords_top = self.transformation.get_pdf_coords_from_data_point(
+        coords_top = self.trafo.get_pdf_coords_from_data_point(
             m.x, m.y + m.upper_error)
-        coords_bottom = self.transformation.get_pdf_coords_from_data_point(
+        coords_bottom = self.trafo.get_pdf_coords_from_data_point(
             m.x, m.y - m.lower_error)
 
         # vertical line
@@ -75,7 +75,7 @@ class Drawer:
         )
 
     def _draw_datapoint(self, m: Measurement):
-        coords = self.transformation.get_pdf_coords_from_data_point(m.x, m.y)
+        coords = self.trafo.get_pdf_coords_from_data_point(m.x, m.y)
         points = [(coords[0]-self.cross_size/2, coords[1]-self.cross_size/2),
                   (coords[0]+self.cross_size/2, coords[1]+self.cross_size/2)]
         self.a.add_annotation(
@@ -98,7 +98,7 @@ class Drawer:
         # if num_data == 0:
         #     return
 
-        coords = self.transformation.get_pdf_coords_from_grid_coords(
+        coords = self.trafo.get_pdf_coords_from_grid_coords(
             Axis.VERTICAL, num_grid)
         points = [(coords[0]-self.axis_tick_size/2, coords[1]),
                   (coords[0]+self.axis_tick_size/2, coords[1])]
@@ -124,7 +124,7 @@ class Drawer:
         # if num_data == 0:
         #     return
 
-        coords = self.transformation.get_pdf_coords_from_grid_coords(
+        coords = self.trafo.get_pdf_coords_from_grid_coords(
             Axis.HORIZONTAL, num_grid)
 
         points = [(coords[0], coords[1]-self.axis_tick_size/2),
@@ -149,9 +149,9 @@ class Drawer:
     def _draw_axis(self, axis: Axis):
         num_blocks = self.num_x_blocks if axis == Axis.HORIZONTAL else self.num_y_blocks
 
-        coords_start = self.transformation.get_pdf_coords_from_grid_coords(
+        coords_start = self.trafo.get_pdf_coords_from_grid_coords(
             axis, 0)
-        coords_end = self.transformation.get_pdf_coords_from_grid_coords(
+        coords_end = self.trafo.get_pdf_coords_from_grid_coords(
             axis, num_blocks)
 
         self.a.add_annotation(

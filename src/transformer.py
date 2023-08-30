@@ -8,7 +8,7 @@ class Axis(Enum):
     HORIZONTAL = 1
 
 
-class Transformation:
+class Transformer:
     def __init__(self, grid_config, should_contain_origin_x, should_contain_origin_y) -> None:
         self.grid_config = grid_config
         self.should_contain_origin_x = should_contain_origin_x
