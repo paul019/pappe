@@ -27,15 +27,14 @@ class Drawer:
 
         self.num_x_blocks = grid_config['num_x_blocks']
         self.num_y_blocks = grid_config['num_y_blocks']
-        self.num_x_block_per_super_block = grid_config['num_x_blocks_per_super_block']
-        self.num_y_blocks_per_super_block = grid_config['num_y_blocks_per_super_block']
+        self.num_x_tiny_blocks_per_block = grid_config['num_x_tiny_blocks_per_block']
+        self.num_y_tiny_blocks_per_block = grid_config['num_y_tiny_blocks_per_block']
 
     def save(self, path: str):
         self.a.write(path)
 
     def draw(self, measurements: list[Measurement]):
-        measurements = self.trafo.analyze_and_offset_measurements(
-            measurements)
+        measurements = self.trafo.analyze_and_offset_measurements(measurements)
 
         self._draw_axis(Axis.HORIZONTAL)
         self._draw_axis(Axis.VERTICAL)
@@ -47,13 +46,13 @@ class Drawer:
                 self._draw_error_bar(m)
 
     def _draw_axes_numbers(self):
-        for i in range(int(self.num_x_blocks / self.num_x_block_per_super_block) + 1):
+        for i in range(self.num_x_blocks + 1):
             self._draw_horizontal_axis_number(
-                i * self.num_x_block_per_super_block)
+                i * self.num_x_tiny_blocks_per_block)
 
-        for i in range(int(self.num_y_blocks / self.num_y_blocks_per_super_block) + 1):
+        for i in range(self.num_y_blocks + 1):
             self._draw_vertical_axis_number(
-                i * self.num_y_blocks_per_super_block)
+                i * self.num_y_tiny_blocks_per_block)
 
     def _draw_error_bar(self, m: Measurement):
         coords_top = self.trafo.get_pdf_coords_from_data_point(
@@ -119,8 +118,8 @@ class Drawer:
             Appearance(stroke_color=(0, 0, 0), stroke_width=1)
         )
 
-        x1, y1 = coords[0]-200, coords[1]-50
-        x2, y2 = coords[0] - self.axis_tick_size/2, coords[1]+50
+        x1, y1 = coords[0] - 200, coords[1] - 50
+        x2, y2 = coords[0] - self.axis_tick_size/2, coords[1] + 50
         self.a.add_annotation(
             'text',
             Location(x1=x1, y1=y1, x2=x2, y2=y2, page=0),
@@ -136,8 +135,8 @@ class Drawer:
         coords = self.trafo.get_pdf_coords_from_grid_coords(
             Axis.HORIZONTAL, num_grid)
 
-        points = [(coords[0], coords[1]-self.axis_tick_size/2),
-                  (coords[0], coords[1]+self.axis_tick_size/2)]
+        points = [(coords[0], coords[1] - self.axis_tick_size/2),
+                  (coords[0], coords[1] + self.axis_tick_size/2)]
         self.a.add_annotation(
             'line',
             Location(points=points, page=0),
@@ -155,7 +154,10 @@ class Drawer:
         )
 
     def _draw_axis(self, axis: Axis):
-        num_blocks = self.num_x_blocks if axis == Axis.HORIZONTAL else self.num_y_blocks
+        if axis == Axis.HORIZONTAL:
+            num_blocks = self.num_x_blocks * self.num_x_tiny_blocks_per_block
+        else:
+            num_blocks = self.num_y_blocks * self.num_y_tiny_blocks_per_block
 
         coords_start = self.trafo.get_pdf_coords_from_grid_coords(
             axis, 0)
