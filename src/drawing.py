@@ -27,6 +27,16 @@ class Drawer:
         measurements = self.trafo.analyze_and_offset_measurements(
             measurements)
 
+        self._draw_axis(Axis.HORIZONTAL)
+        self._draw_axis(Axis.VERTICAL)
+        self._draw_axes_numbers()
+
+        for m in measurements:
+            self._draw_datapoint(m)
+            if m.has_error_bounds():
+                self._draw_error_bar(m)
+
+    def _draw_axes_numbers(self):
         for i in range(int(self.num_x_blocks / self.num_x_block_per_super_block) + 1):
             self._draw_horizontal_axis_number(
                 i * self.num_x_block_per_super_block)
@@ -34,14 +44,6 @@ class Drawer:
         for i in range(int(self.num_y_blocks / self.num_y_blocks_per_super_block) + 1):
             self._draw_vertical_axis_number(
                 i * self.num_y_blocks_per_super_block)
-
-        self._draw_axis(Axis.HORIZONTAL)
-        self._draw_axis(Axis.VERTICAL)
-
-        for m in measurements:
-            self._draw_datapoint(m)
-            if m.has_error_bounds():
-                self._draw_error_bar(m)
 
     def _draw_error_bar(self, m: Measurement):
         coords_top = self.trafo.get_pdf_coords_from_data_point(
