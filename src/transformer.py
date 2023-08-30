@@ -25,7 +25,8 @@ class Transformer:
         self.num_total_y_blocks = grid_config['num_y_blocks'] *\
             grid_config['num_y_tiny_blocks_per_block']
 
-    def analyze_and_offset_measurements(self, measurements: list[Measurement]):
+    def analyze_and_offset_measurements(self, measurements: list[Measurement],
+                                        factors_x: list[int], factors_y: list[int]):
         # Min/Max values
         x_values = [m.x for m in measurements]
         y_values = [m.y for m in measurements]
@@ -54,8 +55,6 @@ class Transformer:
             Axis.VERTICAL, min_y, max_y)
 
         # Refine scale
-        # TODO: outsource to config
-        factors_x, factors_y = [2, 4, 5], [2, 4, 5]
         factors_x.sort()
         factors_y.sort()
         scale_x = self._refine_scale(scale_x, factors_x)

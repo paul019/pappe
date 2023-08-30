@@ -38,8 +38,9 @@ class Drawer:
     def save(self, path: str):
         self.a.write(path)
 
-    def draw(self, measurements: list[Measurement]):
-        measurements = self.trafo.analyze_and_offset_measurements(measurements)
+    def draw_all(self, measurements: list[Measurement], factors_x: list[int], factors_y: list[int]):
+        measurements = self.trafo.analyze_and_offset_measurements(
+            measurements, factors_x, factors_y)
 
         self._draw_axis(Axis.HORIZONTAL)
         self._draw_axis(Axis.VERTICAL)

@@ -3,14 +3,18 @@ from drawing import Drawer
 
 
 def main():
-    config_path = 'grids/grid1.toml'  # TODO: will become CLI param
+    config_path = 'config.toml'
     config = parse_config(config_path)
+
+    grid_no: int = config['grid']
+    config_path_grid = f'grids/grid{grid_no}.toml'
+    complete_grid_config = parse_config(config_path_grid)
 
     csv_path = 'input/data.csv'  # TODO: will become CLI param
     measurements = parse_csv(csv_path)
 
-    drawer = Drawer(config)
-    drawer.draw(measurements)
+    drawer = Drawer(complete_grid_config)
+    drawer.draw_all(measurements, config['factors_x'], config['factors_y'])
 
     output_path = 'output/output.pdf'  # TODO: will become CLI param
     drawer.save(output_path)
