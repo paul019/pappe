@@ -12,11 +12,11 @@ paper_config = config['paper']
 grid_config = config['grid']
 drawing_config = config['drawing']
 
-csvFilePath = 'input/data.csv';
-outputFilePath = 'output/output.pdf';
+csvFilePath = 'input/data.csv'
+outputFilePath = 'output/output.pdf'
 factors = [2, 4, 5]
-shouldContainOriginX = False;
-shouldContainOriginY = False;
+shouldContainOriginX = False
+shouldContainOriginY = False
 
 ####################################
 
@@ -25,8 +25,8 @@ shouldContainOriginY = False;
 file = open(csvFilePath)
 csvReader = csv.reader(file)
 
-points = [];
-errors = [];
+points = []
+errors = []
 
 for row in csvReader:
     points.append((float(row[0]), float(row[1])))
@@ -53,8 +53,8 @@ for point in points:
     maxX = max(maxX, point[0])
     maxY = max(maxY, point[1])
 
-pointsOffsetX = 0;
-pointsOffsetY = 0;
+pointsOffsetX = 0
+pointsOffsetY = 0
 
 # Handle case of not including the origin (currently bad documentation):
 
@@ -63,46 +63,46 @@ if not shouldContainOriginX and minX <= 0 and maxX >= 0:
 
 if not shouldContainOriginX:
     if minX <= 0:
-        pointsOffsetX = -pow(10, math.floor(math.log10(-maxX)));
-        newPointsOffsetX = pointsOffsetX;
+        pointsOffsetX = -pow(10, math.floor(math.log10(-maxX)))
+        newPointsOffsetX = pointsOffsetX
 
         for i in range(2, 10):
             if i*pointsOffsetX >= maxX:
                 newPointsOffsetX = i*pointsOffsetX
 
-        pointsOffsetX = newPointsOffsetX;
+        pointsOffsetX = newPointsOffsetX
     else:
-        pointsOffsetX = pow(10, math.floor(math.log10(minX)));
-        newPointsOffsetX = pointsOffsetX;
+        pointsOffsetX = pow(10, math.floor(math.log10(minX)))
+        newPointsOffsetX = pointsOffsetX
 
         for i in range(2, 10):
             if i*pointsOffsetX <= minX:
                 newPointsOffsetX = i*pointsOffsetX
 
-        pointsOffsetX = newPointsOffsetX;
+        pointsOffsetX = newPointsOffsetX
 
 if not shouldContainOriginY and minY <= 0 and maxY >= 0:
     shouldContainOriginY = True
 
 if not shouldContainOriginY:
     if minY <= 0:
-        pointsOffsetY = -pow(10, math.floor(math.log10(-maxY)));
-        newPointsOffsetY = pointsOffsetY;
+        pointsOffsetY = -pow(10, math.floor(math.log10(-maxY)))
+        newPointsOffsetY = pointsOffsetY
 
         for i in range(2, 10):
             if i*pointsOffsetY >= maxY:
                 newPointsOffsetY = i*pointsOffsetY
 
-        pointsOffsetY = newPointsOffsetY;
+        pointsOffsetY = newPointsOffsetY
     else:
-        pointsOffsetY = pow(10, math.floor(math.log10(minY)));
-        newPointsOffsetY = pointsOffsetY;
+        pointsOffsetY = pow(10, math.floor(math.log10(minY)))
+        newPointsOffsetY = pointsOffsetY
 
         for i in range(2, 10):
             if i*pointsOffsetY <= minY:
                 newPointsOffsetY = i*pointsOffsetY
         
-        pointsOffsetY = newPointsOffsetY;
+        pointsOffsetY = newPointsOffsetY
 
 for i in range(len(points)):
     points[i] = (points[i][0] - pointsOffsetX, points[i][1] - pointsOffsetY)
@@ -115,11 +115,11 @@ maxY -= pointsOffsetY
 
 # Choose coordinate axis scaling and offset:
 
-scaleX = 1;
-scaleY = 1;
+scaleX = 1
+scaleY = 1
 
-offsetX = 0;
-offsetY = 0;
+offsetX = 0
+offsetY = 0
 
 if minX >= 0:
     offsetX = 0
@@ -150,13 +150,13 @@ else:
     scaleY = min( offsetY / (-minY), (grid_config['num_y_blocks']-offsetY) / maxY )
 
 
-scaleX = pow(10, math.floor(math.log10(scaleX)));
-scaleY = pow(10, math.floor(math.log10(scaleY)));
+scaleX = pow(10, math.floor(math.log10(scaleX)))
+scaleY = pow(10, math.floor(math.log10(scaleY)))
 
 newScaleX = scaleX
 newScaleY = scaleY
 
-factors.sort();
+factors.sort()
 
 for factor in factors:
     scaleX_ = scaleX * factor
@@ -183,17 +183,17 @@ a.set_page_dimensions((paper_config['width'], paper_config['height']), 0)
 # Define functions for annotation:
 
 def getPdfCoordsFromDataPoint(x, y):
-    grid_x = (x*scaleX+offsetX) * grid_config['width'] / grid_config['num_x_blocks'] + grid_config['x'];
-    grid_y = (y*scaleY+offsetY) * grid_config['height'] / grid_config['num_y_blocks'] + grid_config['y']; 
-    return (grid_x, grid_y);
+    grid_x = (x*scaleX+offsetX) * grid_config['width'] / grid_config['num_x_blocks'] + grid_config['x']
+    grid_y = (y*scaleY+offsetY) * grid_config['height'] / grid_config['num_y_blocks'] + grid_config['y'] 
+    return (grid_x, grid_y)
 
 def getPdfCoordsFromGridCoords(x, y):
-    grid_x = x * grid_config['width'] / grid_config['num_x_blocks'] + grid_config['x'];
-    grid_y = y * grid_config['height'] / grid_config['num_y_blocks'] + grid_config['y']; 
-    return (grid_x, grid_y);
+    grid_x = x * grid_config['width'] / grid_config['num_x_blocks'] + grid_config['x']
+    grid_y = y * grid_config['height'] / grid_config['num_y_blocks'] + grid_config['y'] 
+    return (grid_x, grid_y)
 
 def printDatapoint(x, y):
-    coords = getPdfCoordsFromDataPoint(x,y);
+    coords = getPdfCoordsFromDataPoint(x,y)
     a.add_annotation(
         'line',
         Location(points=[(coords[0]-drawing_config['cross_size']/2,coords[1]-drawing_config['cross_size']/2),(coords[0]+drawing_config['cross_size']/2,coords[1]+drawing_config['cross_size']/2)], page=0),
@@ -207,10 +207,10 @@ def printDatapoint(x, y):
 
 def printErrorBar(x, y, lowerError, upperError):
     if lowerError == -1 or upperError == -1:
-        return;
+        return
 
-    coordsTop = getPdfCoordsFromDataPoint(x,y+upperError);
-    coordsBottom = getPdfCoordsFromDataPoint(x,y-lowerError);
+    coordsTop = getPdfCoordsFromDataPoint(x,y+upperError)
+    coordsBottom = getPdfCoordsFromDataPoint(x,y-lowerError)
 
     a.add_annotation(
         'line',
@@ -232,7 +232,7 @@ def printVertAxisNumber(gridNum):
     dataNum = (gridNum-offsetY)/scaleY + pointsOffsetY
     if dataNum == 0:
         return
-    coords = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, gridNum);
+    coords = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, gridNum)
     a.add_annotation(
         'line',
         Location(points=[(coords[0]-drawing_config['axis_tick_size']/2,coords[1]),(coords[0]+drawing_config['axis_tick_size']/2,coords[1])], page=0),
@@ -251,7 +251,7 @@ def printHorAxisNumber(gridNum):
     dataNum = (gridNum-offsetX)/scaleX + pointsOffsetX
     if dataNum == 0:
         return
-    coords = getPdfCoordsFromGridCoords(gridNum, offsetY if shouldContainOriginY else 0);
+    coords = getPdfCoordsFromGridCoords(gridNum, offsetY if shouldContainOriginY else 0)
     a.add_annotation(
         'line',
         Location(points=[(coords[0],coords[1]-drawing_config['axis_tick_size']/2),(coords[0],coords[1]+drawing_config['axis_tick_size']/2)], page=0),
@@ -267,8 +267,8 @@ def printHorAxisNumber(gridNum):
     )
 
 def printVertAxis():
-    coordsStart = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, 0);
-    coordsEnd = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, grid_config['num_y_blocks']);
+    coordsStart = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, 0)
+    coordsEnd = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, grid_config['num_y_blocks'])
     a.add_annotation(
         'line',
         Location(points=[coordsStart, coordsEnd], page=0),
@@ -276,8 +276,8 @@ def printVertAxis():
     )
 
 def printHorAxis():
-    coordsStart = getPdfCoordsFromGridCoords(0, offsetY if shouldContainOriginY else 0);
-    coordsEnd = getPdfCoordsFromGridCoords(grid_config['num_x_blocks'], offsetY if shouldContainOriginY else 0);
+    coordsStart = getPdfCoordsFromGridCoords(0, offsetY if shouldContainOriginY else 0)
+    coordsEnd = getPdfCoordsFromGridCoords(grid_config['num_x_blocks'], offsetY if shouldContainOriginY else 0)
     a.add_annotation(
         'line',
         Location(points=[coordsStart, coordsEnd], page=0),
