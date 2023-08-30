@@ -91,9 +91,10 @@ class Transformer:
         min_y -= points_offset_y
         max_y -= points_offset_y
 
-        # Choose coordinate axis scaling and offset:
+        # ratio between data scaling and grid scaling
         scale_x = 1
         scale_y = 1
+        # offset of data points to grid in grid coordinates (always positive)
         offset_x = 0
         offset_y = 0
 
@@ -106,11 +107,11 @@ class Transformer:
         else:
             offset_x = min_x/(min_x-max_x) * self.grid_config['num_x_blocks']
             if offset_x < self.grid_config['num_x_blocks']/2:
-                offset_x = math.ceil(offset_x)\
-                    * self.grid_config['num_x_tiny_blocks_per_block']
+                offset_x = math.ceil(offset_x)
             else:
-                offset_x = math.floor(offset_x)\
-                    * self.grid_config['num_x_tiny_blocks_per_block']
+                offset_x = math.floor(offset_x)
+            offset_x *= self.grid_config['num_x_tiny_blocks_per_block']
+
             scale_x = min(offset_x / (-min_x),
                           (self.num_total_x_blocks - offset_x) / max_x)
 
