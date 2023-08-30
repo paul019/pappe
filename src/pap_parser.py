@@ -21,7 +21,12 @@ def parse_csv(path: str) -> list[Measurement]:
         x, y = float(row[0]), float(row[1])
         m = Measurement(x, y)
 
-        # Optional error bars
+        # Symmetric error
+        if len(row) == 3:
+            error = float(row[2])
+            m.add_error_bounds(error, error)
+
+        # Asymmetric errors
         if len(row) == 4:
             lower_error, upper_error = float(row[2]), float(row[3])
             m.add_error_bounds(lower_error, upper_error)
