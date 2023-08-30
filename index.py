@@ -14,7 +14,6 @@ grid_config = config['grid']
 drawing_config = config['drawing']
 
 csvFilePath = 'input/data.csv';
-inputFilePath = 'input/grid1.pdf';
 outputFilePath = 'output/output.pdf';
 factors = [2, 4, 5]
 shouldContainOriginX = False;
@@ -177,7 +176,7 @@ scaleY = newScaleY
 
 # Open pdf annotator:
 
-a = PdfAnnotator(inputFilePath)
+a = PdfAnnotator(grid_config['file'])
 a.set_page_dimensions((paper_config['width'], paper_config['height']), 0)
 
 ####################################

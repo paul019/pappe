@@ -3,6 +3,7 @@ width = 4133
 height = 5846
 
 [grid]
+file = 'input/grid1.pdf'
 width = 3543
 height = 5318
 x = 406
