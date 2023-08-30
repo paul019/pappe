@@ -129,11 +129,11 @@ elif maxX <= 0:
     offsetX = grid_config['num_x_blocks']
     scaleX = offsetX / (-minX)
 else:
-    offsetX = minX/(minX-maxX) * (grid_config['num_x_blocks']/grid_config['num_x_sub_blocks_per_block'])
-    if offsetX < grid_config['num_x_blocks']/grid_config['num_x_sub_blocks_per_block']/2:
-        offsetX = math.ceil(offsetX) * grid_config['num_x_sub_blocks_per_block']
+    offsetX = minX/(minX-maxX) * (grid_config['num_x_blocks']/grid_config['num_x_blocks_per_super_block'])
+    if offsetX < grid_config['num_x_blocks']/grid_config['num_x_blocks_per_super_block']/2:
+        offsetX = math.ceil(offsetX) * grid_config['num_x_blocks_per_super_block']
     else:
-        offsetX = math.floor(offsetX) * grid_config['num_x_sub_blocks_per_block']
+        offsetX = math.floor(offsetX) * grid_config['num_x_blocks_per_super_block']
     scaleX = min( offsetX / (-minX), (grid_config['num_x_blocks']-offsetX) / maxX )
 
 if minY >= 0:
@@ -143,11 +143,11 @@ elif maxY <= 0:
     offsetY = grid_config['num_y_blocks']
     scaleY = offsetY / (-minY)
 else:
-    offsetY = minY/(minY-maxY) * (grid_config['num_y_blocks']/grid_config['num_y_sub_blocks_per_block'])
-    if offsetY < grid_config['num_y_blocks']/grid_config['num_y_sub_blocks_per_block']/2:
-        offsetY = math.ceil(offsetY) * grid_config['num_y_sub_blocks_per_block']
+    offsetY = minY/(minY-maxY) * (grid_config['num_y_blocks']/grid_config['num_y_blocks_per_super_block'])
+    if offsetY < grid_config['num_y_blocks']/grid_config['num_y_blocks_per_super_block']/2:
+        offsetY = math.ceil(offsetY) * grid_config['num_y_blocks_per_super_block']
     else:
-        offsetY = math.floor(offsetY) * grid_config['num_y_sub_blocks_per_block']
+        offsetY = math.floor(offsetY) * grid_config['num_y_blocks_per_super_block']
     scaleY = min( offsetY / (-minY), (grid_config['num_y_blocks']-offsetY) / maxY )
 
 
@@ -289,11 +289,11 @@ def printHorAxis():
 
 # Do annotation:
 
-for i in range(int(grid_config['num_y_blocks'] / grid_config['num_y_sub_blocks_per_block']) + 1):
-    printVertAxisNumber(i * grid_config['num_y_sub_blocks_per_block'])
+for i in range(int(grid_config['num_y_blocks'] / grid_config['num_y_blocks_per_super_block']) + 1):
+    printVertAxisNumber(i * grid_config['num_y_blocks_per_super_block'])
 
-for i in range(int(grid_config['num_x_blocks'] / grid_config['num_x_sub_blocks_per_block']) + 1):
-    printHorAxisNumber(i * grid_config['num_x_sub_blocks_per_block'])
+for i in range(int(grid_config['num_x_blocks'] / grid_config['num_x_blocks_per_super_block']) + 1):
+    printHorAxisNumber(i * grid_config['num_x_blocks_per_super_block'])
 
 printVertAxis()
 
