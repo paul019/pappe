@@ -42,10 +42,12 @@ All coordinate systems are oriented with numbers increased upwards and rightward
 | `gridHorCount` | grid | number of grid boxes in the horizontal direction |
 | `gridHorBlockCount` | grid | number of grid boxes per horizontal grid block (usually this is 10); this number should divide `gridHorCount` |
 | `gridVertBlockCount` | grid | number of grid boxes per vertical grid block (usually this is 10); this number should divide `gridVertCount` |
-| `csvFilePath` | - | relative path of your csv file |
+| `csvFilePath` | - | relative path of your csv file (see below for more information on the csv file) |
 | `inputFilePath` | - | relative path of your input pdf file (usually either a blank page or millimeter paper) |
 | `outputFilePath` | - | relative path of your output pdf file (this should be different from `inputFilePath`!) |
-| `factors` | - | coordinate axis scale factors (TODO: explain!) |
+| `factors` | - | array of coordinate axis scale factors (TODO: explain!) |
+| `shouldContainOriginX` | - | whether the origin of the x axis should be included |
+| `shouldContainOriginY` | - | whether the origin of the y axis should be included |
 
 ### Other important variables
 
@@ -54,6 +56,8 @@ All coordinate systems are oriented with numbers increased upwards and rightward
 | `minX` etc. | data | maximum x value in the dataset (including error bars!) |
 | `scaleX` etc. | grid, data | scale factor between the grid coordinate system and the data coordinate system |
 | `offsetX` etc. | grid | x-location of the data coordinate system origin within the grid coordinate system |
+| `points` | - | array of data points; each entry is a tupel of x and y values |
+| `errors` | - | array of errors; each entry is a tupel of lower and upper errors; if there is no error value, the tupel contains `-1` |
 
 ### CSV file structure
 

@@ -27,6 +27,8 @@ csvFilePath = 'input/data.csv';
 inputFilePath = 'input/a.pdf';
 outputFilePath = 'output/b.pdf';
 factors = [2, 4, 5]
+shouldContainOriginX = False;
+shouldContainOriginY = False;
 
 ####################################
 
@@ -36,13 +38,21 @@ file = open(csvFilePath)
 csvReader = csv.reader(file)
 
 points = [];
+errors = [];
 
 for row in csvReader:
     points.append((float(row[0]), float(row[1])))
 
+    if len(row) == 2:
+        errors.append((-1, -1))
+    elif len(row) == 3:
+        errors.append((float(row[2]), float(row[2])))
+    else:
+        errors.append((float(row[2]), float(row[3])))
+
 ####################################
 
-# Analyze data and choose axis scale and offset:
+# Analyze data:
 
 minX = points[0][0]
 minY = points[0][1]
@@ -54,6 +64,68 @@ for point in points:
     minY = min(minY, point[1])
     maxX = max(maxX, point[0])
     maxY = max(maxY, point[1])
+
+pointsOffsetX = 0;
+pointsOffsetY = 0;
+
+# Handle case of not including the origin (currently bad documentation):
+
+if not shouldContainOriginX and minX <= 0 and maxX >= 0:
+    shouldContainOriginX = True
+
+if not shouldContainOriginX:
+    if minX <= 0:
+        pointsOffsetX = -pow(10, math.floor(math.log10(-maxX)));
+        newPointsOffsetX = pointsOffsetX;
+
+        for i in range(2, 10):
+            if i*pointsOffsetX >= maxX:
+                newPointsOffsetX = i*pointsOffsetX
+
+        pointsOffsetX = newPointsOffsetX;
+    else:
+        pointsOffsetX = pow(10, math.floor(math.log10(minX)));
+        newPointsOffsetX = pointsOffsetX;
+
+        for i in range(2, 10):
+            if i*pointsOffsetX <= minX:
+                newPointsOffsetX = i*pointsOffsetX
+
+        pointsOffsetX = newPointsOffsetX;
+
+if not shouldContainOriginY and minY <= 0 and maxY >= 0:
+    shouldContainOriginY = True
+
+if not shouldContainOriginY:
+    if minY <= 0:
+        pointsOffsetY = -pow(10, math.floor(math.log10(-maxY)));
+        newPointsOffsetY = pointsOffsetY;
+
+        for i in range(2, 10):
+            if i*pointsOffsetY >= maxY:
+                newPointsOffsetY = i*pointsOffsetY
+
+        pointsOffsetY = newPointsOffsetY;
+    else:
+        pointsOffsetY = pow(10, math.floor(math.log10(minY)));
+        newPointsOffsetY = pointsOffsetY;
+
+        for i in range(2, 10):
+            if i*pointsOffsetY <= minY:
+                newPointsOffsetY = i*pointsOffsetY
+        
+        pointsOffsetY = newPointsOffsetY;
+
+for i in range(len(points)):
+    points[i] = (points[i][0] - pointsOffsetX, points[i][1] - pointsOffsetY)
+
+minX -= pointsOffsetX
+maxX -= pointsOffsetX
+
+minY -= pointsOffsetY
+maxY -= pointsOffsetY
+
+# Choose coordinate axis scaling and offset:
 
 scaleX = 1;
 scaleY = 1;
@@ -145,11 +217,34 @@ def printDatapoint(x, y):
         Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
     )
 
+def printErrorBar(x, y, lowerError, upperError):
+    if lowerError == -1 or upperError == -1:
+        return;
+
+    coordsTop = getPdfCoordsFromDataPoint(x,y+upperError);
+    coordsBottom = getPdfCoordsFromDataPoint(x,y-lowerError);
+
+    a.add_annotation(
+        'line',
+        Location(points=[coordsBottom, coordsTop], page=0),
+        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
+    )
+    a.add_annotation(
+        'line',
+        Location(points=[(coordsBottom[0]-crossSize/2, coordsBottom[1]), (coordsBottom[0]+crossSize/2, coordsBottom[1])], page=0),
+        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
+    )
+    a.add_annotation(
+        'line',
+        Location(points=[(coordsTop[0]-crossSize/2, coordsTop[1]), (coordsTop[0]+crossSize/2, coordsTop[1])], page=0),
+        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
+    )
+
 def printVertAxisNumber(gridNum):
-    dataNum = (gridNum-offsetY)/scaleY
+    dataNum = (gridNum-offsetY)/scaleY + pointsOffsetY
     if dataNum == 0:
         return
-    coords = getPdfCoordsFromGridCoords(offsetX, gridNum);
+    coords = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, gridNum);
     a.add_annotation(
         'line',
         Location(points=[(coords[0]-axisTickSize/2,coords[1]),(coords[0]+axisTickSize/2,coords[1])], page=0),
@@ -165,10 +260,10 @@ def printVertAxisNumber(gridNum):
     )
 
 def printHorAxisNumber(gridNum):
-    dataNum = (gridNum-offsetX)/scaleX
+    dataNum = (gridNum-offsetX)/scaleX + pointsOffsetX
     if dataNum == 0:
         return
-    coords = getPdfCoordsFromGridCoords(gridNum, offsetY);
+    coords = getPdfCoordsFromGridCoords(gridNum, offsetY if shouldContainOriginY else 0);
     a.add_annotation(
         'line',
         Location(points=[(coords[0],coords[1]-axisTickSize/2),(coords[0],coords[1]+axisTickSize/2)], page=0),
@@ -184,8 +279,8 @@ def printHorAxisNumber(gridNum):
     )
 
 def printVertAxis():
-    coordsStart = getPdfCoordsFromGridCoords(offsetX, 0);
-    coordsEnd = getPdfCoordsFromGridCoords(offsetX, gridVertCount);
+    coordsStart = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, 0);
+    coordsEnd = getPdfCoordsFromGridCoords(offsetX if shouldContainOriginX else 0, gridVertCount);
     a.add_annotation(
         'line',
         Location(points=[coordsStart, coordsEnd], page=0),
@@ -193,8 +288,8 @@ def printVertAxis():
     )
 
 def printHorAxis():
-    coordsStart = getPdfCoordsFromGridCoords(0, offsetY);
-    coordsEnd = getPdfCoordsFromGridCoords(gridHorCount, offsetY);
+    coordsStart = getPdfCoordsFromGridCoords(0, offsetY if shouldContainOriginY else 0);
+    coordsEnd = getPdfCoordsFromGridCoords(gridHorCount, offsetY if shouldContainOriginY else 0);
     a.add_annotation(
         'line',
         Location(points=[coordsStart, coordsEnd], page=0),
@@ -215,8 +310,12 @@ printVertAxis()
 
 printHorAxis()
 
-for point in points:
+for i in range(len(points)):
+    point = points[i]
+    error = errors[i]
+
     printDatapoint(point[0], point[1])
+    printErrorBar(point[0], point[1], error[0], error[1])
 
 ####################################
 
