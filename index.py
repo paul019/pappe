@@ -1,12 +1,11 @@
 from pdf_annotate import PdfAnnotator, Location, Appearance
 import math
 import csv
-import random
 import tomllib
 
 # Read config:
 
-with open('config.toml', 'rb') as f:
+with open('grids/grid1.toml', 'rb') as f:
     config = tomllib.load(f)
 
 paper_config = config['paper']
@@ -176,7 +175,7 @@ scaleY = newScaleY
 
 # Open pdf annotator:
 
-a = PdfAnnotator(grid_config['file'])
+a = PdfAnnotator(paper_config['file'])
 a.set_page_dimensions((paper_config['width'], paper_config['height']), 0)
 
 ####################################
