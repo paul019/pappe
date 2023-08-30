@@ -1,5 +1,5 @@
 from pap_parser import parse_csv, parse_config
-from drawing import Drawer
+from drawer import Drawer
 from transformer import Transformer
 
 
