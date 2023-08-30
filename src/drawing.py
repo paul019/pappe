@@ -15,7 +15,7 @@ class Drawer:
     measurements into PDF coordinates.
     """
 
-    def __init__(self, config) -> None:
+    def __init__(self, trafo: Transformer, config) -> None:
         paper_config = config['paper']
         grid_config = config['grid']
         drawing_config = config['drawing']
@@ -24,8 +24,7 @@ class Drawer:
         self.a.set_page_dimensions(
             (paper_config['width'], paper_config['height']), 0)
 
-        # outsource should_contain_origin (see "False" params here)
-        self.trafo = Transformer(grid_config, False, False)
+        self.trafo = trafo
 
         self.cross_size = drawing_config['cross_size']
         self.axis_tick_size = drawing_config['axis_tick_size']
@@ -38,9 +37,8 @@ class Drawer:
     def save(self, path: str):
         self.a.write(path)
 
-    def draw_all(self, measurements: list[Measurement], factors_x: list[int], factors_y: list[int]):
-        measurements = self.trafo.analyze_and_offset_measurements(
-            measurements, factors_x, factors_y)
+    def draw_all(self, measurements: list[Measurement]):
+        measurements = self.trafo.analyze_and_offset_measurements(measurements)
 
         self._draw_axis(Axis.HORIZONTAL)
         self._draw_axis(Axis.VERTICAL)

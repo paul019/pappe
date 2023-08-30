@@ -15,18 +15,23 @@ class Transformer:
     Note that analyze_and_offset_measurements must be called first.
     """
 
-    def __init__(self, grid_config, should_contain_origin_x, should_contain_origin_y) -> None:
+    def __init__(self, grid_config, factors_config, origins_config) -> None:
         self.grid_config = grid_config
-        self.should_contain_origin_x = should_contain_origin_x
-        self.should_contain_origin_y = should_contain_origin_y
+
+        self.factors_x = factors_config['x']
+        self.factors_y = factors_config['y']
+        self.factors_x.sort()
+        self.factors_y.sort()
+
+        self.should_contain_origin_x = origins_config['x']
+        self.should_contain_origin_y = origins_config['y']
 
         self.num_total_x_blocks = grid_config['num_x_blocks'] * \
             grid_config['num_x_tiny_blocks_per_block']
         self.num_total_y_blocks = grid_config['num_y_blocks'] *\
             grid_config['num_y_tiny_blocks_per_block']
 
-    def analyze_and_offset_measurements(self, measurements: list[Measurement],
-                                        factors_x: list[int], factors_y: list[int]):
+    def analyze_and_offset_measurements(self, measurements: list[Measurement]):
         # Min/Max values
         x_values = [m.x for m in measurements]
         y_values = [m.y for m in measurements]
@@ -55,10 +60,8 @@ class Transformer:
             Axis.VERTICAL, min_y, max_y)
 
         # Refine scale
-        factors_x.sort()
-        factors_y.sort()
-        scale_x = self._refine_scale(scale_x, factors_x)
-        scale_y = self._refine_scale(scale_y, factors_y)
+        scale_x = self._refine_scale(scale_x, self.factors_x)
+        scale_y = self._refine_scale(scale_y, self.factors_y)
 
         # Make accessible as instance variables
         self.offset_x = offset_x
