@@ -1,18 +1,14 @@
 # A helping tool to create diagrams in PAP1
  
-## Installation
+## Run
 
-First, install the necessary python package:
+Install the necessary python package:
 
 `pip3 install pdf_annotate`
 
-Now, clone this repository on your local machine:
+Run the script:
 
-`git clone https://github.com/paul019/pap1-helper`
-
-To run the script, use:
-
-`python3 index.py`
+`python3 src/pap1.py`
 
 
 ## Documentation
