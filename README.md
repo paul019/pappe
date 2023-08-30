@@ -56,6 +56,7 @@ All coordinate systems are oriented with numbers increased upwards and rightward
 | `minX` etc. | data | maximum x value in the dataset (including error bars!) |
 | `scaleX` etc. | grid, data | scale factor between the grid coordinate system and the data coordinate system |
 | `offsetX` etc. | grid | x-location of the data coordinate system origin within the grid coordinate system |
+| `pointsOffsetX` etc. | data | if the user decides to not include the origin (see `shouldContainOriginX`), this variable adds an offset to the data to create a 'virtual' origin to the data; otherwise this variable is `0` |
 | `points` | - | array of data points; each entry is a tupel of x and y values |
 | `errors` | - | array of errors; each entry is a tupel of lower and upper errors; if there is no error value, the tupel contains `-1` |
 
