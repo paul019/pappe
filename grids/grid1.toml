@@ -1,0 +1,19 @@
+[paper]
+file = 'grids/grid1.pdf'
+width = 4133
+height = 5846
+
+[grid]
+file = 'input/grid1.pdf'
+width = 3543
+height = 5318
+x = 406
+y = 264
+num_x_blocks = 180
+num_x_blocks_per_super_block = 10
+num_y_blocks = 270
+num_y_blocks_per_super_block = 10
+
+[drawing]
+cross_size = 10
+axis_tick_size = 20
