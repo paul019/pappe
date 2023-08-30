@@ -24,8 +24,8 @@ gridVertBlockCount = 10;
 # Other paramters:
 
 csvFilePath = 'input/data.csv';
-inputFilePath = 'input/a.pdf';
-outputFilePath = 'output/b.pdf';
+inputFilePath = 'input/grid1.pdf';
+outputFilePath = 'output/output.pdf';
 factors = [2, 4, 5]
 shouldContainOriginX = False;
 shouldContainOriginY = False;
