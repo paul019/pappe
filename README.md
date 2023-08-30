@@ -19,13 +19,13 @@ To run the script, use:
 
 ### Coordinate systems
 
-In this project, there are three distinct coordinate systems.
+In this project, there are three distinct coordinate systems:
 
 - The coordinate system of the page (e. g. `4133 x 5846 px`).
 - The coordinate system of the grid on the paper (e. g. `180 x 270`).
 - The coordinate system of the data that is displayed on the grid (this depends on the actual data; e. g. the data's maximum value in x direction might be $10^6$).
 
-All coordinate systems are oriented with numbers increased upwards and rightwards.
+All coordinate systems are oriented with numbers increasing upwards and rightwards.
 
 ### Global input variables
 
@@ -42,10 +42,12 @@ All coordinate systems are oriented with numbers increased upwards and rightward
 | `gridHorCount` | grid | number of grid boxes in the horizontal direction |
 | `gridHorBlockCount` | grid | number of grid boxes per horizontal grid block (usually this is 10); this number should divide `gridHorCount` |
 | `gridVertBlockCount` | grid | number of grid boxes per vertical grid block (usually this is 10); this number should divide `gridVertCount` |
-| `csvFilePath` | - | relative path of your csv file |
+| `csvFilePath` | - | relative path of your csv file (see below for more information on the csv file) |
 | `inputFilePath` | - | relative path of your input pdf file (usually either a blank page or millimeter paper) |
 | `outputFilePath` | - | relative path of your output pdf file (this should be different from `inputFilePath`!) |
-| `factors` | - | coordinate axis scale factors (TODO: explain!) |
+| `factors` | - | array of coordinate axis scale factors (TODO: explain!) |
+| `shouldContainOriginX` | - | whether the origin of the x axis should be included |
+| `shouldContainOriginY` | - | whether the origin of the y axis should be included |
 
 ### Other important variables
 
@@ -54,6 +56,9 @@ All coordinate systems are oriented with numbers increased upwards and rightward
 | `minX` etc. | data | maximum x value in the dataset (including error bars!) |
 | `scaleX` etc. | grid, data | scale factor between the grid coordinate system and the data coordinate system |
 | `offsetX` etc. | grid | x-location of the data coordinate system origin within the grid coordinate system |
+| `pointsOffsetX` etc. | data | if the user decides to not include the origin (see `shouldContainOriginX`), this variable adds an offset to the data to create a 'virtual' origin to the data; otherwise this variable is `0` |
+| `points` | - | array of data points; each entry is a tupel of x and y values |
+| `errors` | - | array of errors; each entry is a tupel of lower and upper errors; if there is no error value, the tupel contains `-1` |
 
 ### CSV file structure
 
