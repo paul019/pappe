@@ -5,6 +5,11 @@ from transformer import Axis, Transformer
 
 
 class Drawer:
+    """
+    Draws measurements onto a PDF file. Uses a Transformer to transform
+    measurements into PDF coordinates.
+    """
+
     def __init__(self, paper_config, grid_config, drawing_config) -> None:
         self.a = PdfAnnotator(paper_config['file'])
         self.a.set_page_dimensions(

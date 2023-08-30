@@ -9,6 +9,12 @@ class Axis(Enum):
 
 
 class Transformer:
+    """
+    Transforms measurements into PDF coordinates based on grid configuration.
+
+    Note that analyze_and_offset_measurements must be called first.
+    """
+
     def __init__(self, grid_config, should_contain_origin_x, should_contain_origin_y) -> None:
         self.grid_config = grid_config
         self.should_contain_origin_x = should_contain_origin_x

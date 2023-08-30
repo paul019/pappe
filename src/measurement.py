@@ -1,7 +1,10 @@
 class Measurement:
     """
     One point of a data series, e.g. temperature for a specific time.
-    Might have error bounds defined (they default to 0.0)
+    "Data point" is used interchangeably with "measurement".
+
+    A measurement may define error bounds. If not specified, they default to 0.0
+    and are not drawn.
     """
 
     def __init__(self, x: float, y: float):

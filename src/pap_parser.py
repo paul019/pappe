@@ -8,7 +8,7 @@ def parse_csv(path: str) -> list[Measurement]:
     """
     Parses the given CSV file into a list of measurements.
 
-    Note that this does not check for validity of the CSV file, e.g. we assume
+    Note that this does not check for validity of the CSV file, i.e. we assume
     that the file is well-formed according to the documentation.
     """
     measurements: list[Measurement] = []
