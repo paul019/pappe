@@ -3,6 +3,8 @@ import math
 import csv
 import random
 
+# Parameters to describe the millimeter paper:
+
 pageWidth = 4133;
 pageHeight = 5846;
 
@@ -19,15 +21,18 @@ gridHorBlockCount = 10;
 gridVertCount = 270;
 gridVertBlockCount = 10;
 
-scaleX = 1;
-scaleY = 1;
+# Other paramters:
 
-offsetX = 0;
-offsetY = 0;
+csvFilePath = 'input/data.csv';
+inputFilePath = 'input/a.pdf';
+outputFilePath = 'output/b.pdf';
+factors = [2, 4, 5]
 
 ####################################
 
-file = open('data.csv')
+# Read CSV-file:
+
+file = open(csvFilePath)
 csvReader = csv.reader(file)
 
 points = [];
@@ -35,19 +40,26 @@ points = [];
 for row in csvReader:
     points.append((float(row[0]), float(row[1])))
 
-#for i in range(100):
-    #points.append((random.uniform(-10000, 10000),random.uniform(-10000, 10000)))
+####################################
 
-minX = float(points[0][0])
-minY = float(points[0][1])
-maxX = float(points[0][0])
-maxY = float(points[0][1])
+# Analyze data and choose axis scale and offset:
+
+minX = points[0][0]
+minY = points[0][1]
+maxX = points[0][0]
+maxY = points[0][1]
 
 for point in points:
-    minX = min(minX, float(point[0]))
-    minY = min(minY, float(point[1]))
-    maxX = max(maxX, float(point[0]))
-    maxY = max(maxY, float(point[1]))
+    minX = min(minX, point[0])
+    minY = min(minY, point[1])
+    maxX = max(maxX, point[0])
+    maxY = max(maxY, point[1])
+
+scaleX = 1;
+scaleY = 1;
+
+offsetX = 0;
+offsetY = 0;
 
 if minX >= 0:
     offsetX = 0
@@ -84,7 +96,7 @@ scaleY = pow(10, math.floor(math.log10(scaleY)));
 newScaleX = scaleX
 newScaleY = scaleY
 
-factors = [2, 4, 5]
+factors.sort();
 
 for factor in factors:
     scaleX_ = scaleX * factor
@@ -99,13 +111,16 @@ for factor in factors:
 scaleX = newScaleX
 scaleY = newScaleY
 
+####################################
+
+# Open pdf annotator:
+
+a = PdfAnnotator(inputFilePath)
+a.set_page_dimensions((pageWidth, pageHeight), 0)
 
 ####################################
 
-gridDataWidth = gridWidth * scaleX;
-
-a = PdfAnnotator('a.pdf')
-a.set_page_dimensions((pageWidth, pageHeight), 0)
+# Define functions for annotation:
 
 def getPdfCoordsFromDataPoint(x, y):
     grid_x = (x*scaleX+offsetX) * gridWidth / gridHorCount + gridX;
@@ -186,6 +201,9 @@ def printHorAxis():
         Appearance(stroke_color=(0, 0, 0), stroke_width=1)
     )
 
+####################################
+
+# Do annotation:
 
 for i in range(int(gridVertCount / gridVertBlockCount) + 1):
     printVertAxisNumber(i * gridVertBlockCount)
@@ -200,4 +218,8 @@ printHorAxis()
 for point in points:
     printDatapoint(point[0], point[1])
 
-a.write('b.pdf')
+####################################
+
+# Export:
+
+a.write(outputFilePath)
