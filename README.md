@@ -13,7 +13,7 @@ Install the necessary python package:
 
 Run the script:
 
-`python3 src/pap1.py`
+`python3 src/pappe.py`
 
 
 ## Documentation
