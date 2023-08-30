@@ -19,13 +19,13 @@ To run the script, use:
 
 ### Coordinate systems
 
-In this project, there are three distinct coordinate systems.
+In this project, there are three distinct coordinate systems:
 
 - The coordinate system of the page (e. g. `4133 x 5846 px`).
 - The coordinate system of the grid on the paper (e. g. `180 x 270`).
 - The coordinate system of the data that is displayed on the grid (this depends on the actual data; e. g. the data's maximum value in x direction might be $10^6$).
 
-All coordinate systems are oriented with numbers increased upwards and rightwards.
+All coordinate systems are oriented with numbers increasing upwards and rightwards.
 
 ### Global input variables
 
