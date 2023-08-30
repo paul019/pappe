@@ -132,29 +132,29 @@ class Transformer:
             scale_y = min(offset_y / (-min_y),
                           (self.num_total_y_blocks - offset_y) / max_y)
 
-        scale_x = pow(10, math.floor(math.log10(scale_x)))
-        scale_y = pow(10, math.floor(math.log10(scale_y)))
-        new_scale_x = scale_x
-        new_scale_y = scale_y
-
         # TODO: outsource
         factors = [2, 4, 5]
         factors.sort()
 
+        scale_x_rounded_down = pow(10, math.floor(math.log10(scale_x)))
+        scale_x = scale_x_rounded_down
         for factor in factors:
-            scale_x_2 = scale_x * factor
-            if max_x * scale_x_2 + offset_x <= self.num_total_x_blocks and min_x * scale_x_2 + offset_x >= 0:
-                new_scale_x = scale_x_2
+            scale_x_trial = scale_x_rounded_down * factor
+            if max_x * scale_x_trial + offset_x <= self.num_total_x_blocks\
+                    and min_x * scale_x_trial + offset_x >= 0:
+                scale_x = scale_x_trial
 
+        scale_y_rounded_down = pow(10, math.floor(math.log10(scale_y)))
+        scale_y = scale_y_rounded_down
         for factor in factors:
-            scale_y_2 = scale_y * factor
-            if max_y * scale_y_2 + offset_y <= self.num_total_y_blocks and min_y * scale_y_2 + offset_y >= 0:
-                new_scale_y = scale_y_2
+            scale_y_trial = scale_y_rounded_down * factor
+            if max_y * scale_y_trial + offset_y <= self.num_total_y_blocks and min_y * scale_y_trial + offset_y >= 0:
+                scale_y = scale_y_trial
 
         self.offset_x = offset_x
         self.offset_y = offset_y
-        self.scale_x = new_scale_x
-        self.scale_y = new_scale_y
+        self.scale_x = scale_x
+        self.scale_y = scale_y
         self.points_offset_x = points_offset_x
         self.points_offset_y = points_offset_y
 
