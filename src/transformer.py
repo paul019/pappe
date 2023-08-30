@@ -54,14 +54,12 @@ class Transformer:
             Axis.VERTICAL, min_y, max_y)
 
         # Refine scale
-        # TODO: outsource
+        # TODO: outsource to config
         factors_x, factors_y = [2, 4, 5], [2, 4, 5]
         factors_x.sort()
         factors_y.sort()
-        scale_x = self._refine_scale(scale_x, factors_x,
-                                     min_x, max_x, offset_x, self.num_total_x_blocks)
-        scale_y = self._refine_scale(scale_y, factors_y,
-                                     min_y, max_y, offset_y, self.num_total_y_blocks)
+        scale_x = self._refine_scale(scale_x, factors_x)
+        scale_y = self._refine_scale(scale_y, factors_y)
 
         # Make accessible as instance variables
         self.offset_x = offset_x
@@ -79,6 +77,8 @@ class Transformer:
 
         This is useful if the origin is not to be shown.
         """
+        # TODO: Refactoring by Paul ;)
+
         if min_value <= 0:
             points_offset = -pow(10, math.floor(math.log10(-max_value)))
             points_offset_trial = points_offset
@@ -133,19 +133,14 @@ class Transformer:
 
         return offset, scale
 
-    def _refine_scale(self, scale: float, factors: list[int],
-                      min_value: float, max_value: float, offset: float, num_total_blocks: int) -> float:
+    def _refine_scale(self, scale: float, factors: list[int]) -> float:
         scale_rounded_down = pow(10, math.floor(math.log10(scale)))
         scale_refined = scale_rounded_down
 
+        ratio = scale / scale_rounded_down
         for factor in factors:
-            scale_trial = scale_rounded_down * factor
-
-            fits_min = min_value * scale_trial + offset >= 0
-            fits_max = max_value * scale_trial + offset <= num_total_blocks
-
-            if fits_min and fits_max:
-                scale_refined = scale_trial
+            if factor <= ratio:
+                scale_refined = scale_rounded_down * factor
 
         return scale_refined
 
