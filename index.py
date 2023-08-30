@@ -230,29 +230,6 @@ def printErrorBar(x, y, lowerError, upperError):
         Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
     )
 
-def printErrorBar(x, y, lowerError, upperError):
-    if lowerError == -1 or upperError == -1:
-        return;
-
-    coordsTop = getPdfCoordsFromDataPoint(x,y+upperError);
-    coordsBottom = getPdfCoordsFromDataPoint(x,y-lowerError);
-
-    a.add_annotation(
-        'line',
-        Location(points=[coordsBottom, coordsTop], page=0),
-        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
-    )
-    a.add_annotation(
-        'line',
-        Location(points=[(coordsBottom[0]-drawing_config['cross_size']/2, coordsBottom[1]), (coordsBottom[0]+drawing_config['cross_size']/2, coordsBottom[1])], page=0),
-        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
-    )
-    a.add_annotation(
-        'line',
-        Location(points=[(coordsTop[0]-drawing_config['cross_size']/2, coordsTop[1]), (coordsTop[0]+drawing_config['cross_size']/2, coordsTop[1])], page=0),
-        Appearance(stroke_color=(1, 0, 0), stroke_width=0.5)
-    )
-
 def printVertAxisNumber(gridNum):
     dataNum = (gridNum-offsetY)/scaleY + pointsOffsetY
     if dataNum == 0:
