@@ -8,9 +8,9 @@ height = 5318
 x = 406
 y = 264
 num_x_blocks = 180
-num_x_sub_blocks_per_block = 10
+num_x_blocks_per_super_block = 10
 num_y_blocks = 270
-num_y_sub_blocks_per_block = 10
+num_y_blocks_per_super_block = 10
 
 [drawing]
 cross_size = 10
