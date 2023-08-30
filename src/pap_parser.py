@@ -19,14 +19,14 @@ def parse_csv(path: str) -> list[Measurement]:
 
     for row in reader:
         x, y = float(row[0]), float(row[1])
-        measurement = Measurement(x, y)
+        m = Measurement(x, y)
 
         # Optional error bars
         if len(row) == 4:
             lower_error, upper_error = float(row[2]), float(row[3])
-            measurement.add_error(lower_error, upper_error)
+            m.add_error_bounds(lower_error, upper_error)
 
-        measurements.append(measurement)
+        measurements.append(m)
 
     return measurements
 

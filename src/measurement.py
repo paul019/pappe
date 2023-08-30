@@ -13,7 +13,7 @@ class Measurement:
         self.lower_error: float = 0.0
         self.upper_error: float = 0.0
 
-    def add_error(self, lower_error: float, upper_error: float):
+    def add_error_bounds(self, lower_error: float, upper_error: float):
         self.lower_error = lower_error
         self.upper_error = upper_error
 
