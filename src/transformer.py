@@ -150,7 +150,7 @@ class Transformer:
 
         return measurements
 
-    def get_pdf_coords_from_data_point(self, x: float, y: float):
+    def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
         grid_x = (x*self.scale_x+self.offset_x) * \
             self.grid_config['width'] / \
             self.grid_config['num_x_blocks'] + self.grid_config['x']
@@ -159,14 +159,14 @@ class Transformer:
             self.grid_config['num_y_blocks'] + self.grid_config['y']
         return (grid_x, grid_y)
 
-    def _get_pdf_coords_from_grid_coords(self, x: float, y: float):
+    def _get_pdf_coords_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
         grid_x = x * self.grid_config['width'] / \
             self.grid_config['num_x_blocks'] + self.grid_config['x']
         grid_y = y * self.grid_config['height'] / \
             self.grid_config['num_y_blocks'] + self.grid_config['y']
         return (grid_x, grid_y)
 
-    def get_pdf_coords_from_grid_coords(self, axis: Axis, value: float):
+    def get_pdf_coords_from_grid_coords(self, axis: Axis, value: float) -> tuple[float, float]:
         if axis == Axis.VERTICAL:
             x = self.offset_x if self.should_contain_origin_x else 0
             y = value
