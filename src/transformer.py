@@ -99,10 +99,10 @@ class Transformer:
 
         if min_x >= 0:
             offset_x = 0
-            scale_x = (self.num_total_x_blocks - offset_x) / max_x
+            scale_x = self.num_total_x_blocks / max_x
         elif max_x <= 0:
             offset_x = self.num_total_x_blocks
-            scale_x = offset_x / (-min_x)
+            scale_x = self.num_total_x_blocks / (-min_x)
         else:
             offset_x = min_x/(min_x-max_x) * self.grid_config['num_x_blocks']
             if offset_x < self.grid_config['num_x_blocks']/2:
