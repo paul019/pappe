@@ -145,6 +145,8 @@ class Transformer:
         self.offset_y = offset_y
         self.scale_x = new_scale_x
         self.scale_y = new_scale_y
+        self.points_offset_x = points_offset_x
+        self.points_offset_y = points_offset_y
 
         return measurements
 
@@ -173,3 +175,10 @@ class Transformer:
             y = self.offset_y if self.should_contain_origin_y else 0
 
         return self._get_pdf_coords_from_grid_coords(x, y)
+
+    def grid_to_num_data(self, num_grid: int, axis: Axis) -> int:
+        offset = self.offset_x if axis == Axis.HORIZONTAL else self.offset_y
+        scale = self.scale_x if axis == Axis.HORIZONTAL else self.scale_y
+        point_offset = self.points_offset_x if axis == Axis.HORIZONTAL else self.points_offset_y
+
+        return (num_grid-offset)/scale + point_offset

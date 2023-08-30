@@ -93,13 +93,12 @@ class Drawer:
         )
 
     def _draw_vertical_axis_number(self, num_grid):
-        # TODO: I don't understand this
-        # num_data = (num_grid-offset_y)/scale_y + points_offset_y
-        # if num_data == 0:
-        #     return
+        num_data = self.trafo.grid_to_num_data(num_grid, Axis.VERTICAL)
+        label = f'{num_data:.2e}'
 
         coords = self.trafo.get_pdf_coords_from_grid_coords(
             Axis.VERTICAL, num_grid)
+
         points = [(coords[0]-self.axis_tick_size/2, coords[1]),
                   (coords[0]+self.axis_tick_size/2, coords[1])]
         self.a.add_annotation(
@@ -107,8 +106,7 @@ class Drawer:
             Location(points=points, page=0),
             Appearance(stroke_color=(0, 0, 0), stroke_width=1)
         )
-        # label = "{:.2e}".format(num_data)
-        label = 'TODO'
+
         x1, y1 = coords[0]-200, coords[1]-50
         x2, y2 = coords[0] - self.axis_tick_size/2, coords[1]+50
         self.a.add_annotation(
@@ -120,9 +118,8 @@ class Drawer:
         )
 
     def _draw_horizontal_axis_number(self, num_grid):
-        # num_data = (num_grid-self.offset_x)/self.scale_x + self.points_offset_x
-        # if num_data == 0:
-        #     return
+        num_data = self.trafo.grid_to_num_data(num_grid, Axis.HORIZONTAL)
+        label = f'{num_data:.2e}'
 
         coords = self.trafo.get_pdf_coords_from_grid_coords(
             Axis.HORIZONTAL, num_grid)
@@ -134,8 +131,7 @@ class Drawer:
             Location(points=points, page=0),
             Appearance(stroke_color=(0, 0, 0), stroke_width=1)
         )
-        # label = "{:.2e}".format(num_data)
-        label = 'TODO'
+
         x1, y1 = coords[0]-100, coords[1]-100-self.axis_tick_size/2
         x2, y2 = coords[0]+100, coords[1]-self.axis_tick_size/2
         self.a.add_annotation(
