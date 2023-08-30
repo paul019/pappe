@@ -109,10 +109,11 @@ class Drawer:
         )
         # label = "{:.2e}".format(num_data)
         label = 'TODO'
+        x1, y1 = coords[0]-200, coords[1]-50
+        x2, y2 = coords[0] - self.axis_tick_size/2, coords[1]+50
         self.a.add_annotation(
             'text',
-            Location(x1=coords[0]-200, y1=coords[1]-50, x2=coords[0] -
-                     self.axis_tick_size/2, y2=coords[1]+50, page=0),
+            Location(x1=x1, y1=y1, x2=x2, y2=y2, page=0),
             Appearance(content=label, fill=[0, 0, 0],
                        stroke_width=1,
                        font_size=40, text_align='right')
