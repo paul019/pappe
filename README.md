@@ -21,30 +21,31 @@ To run the script, use:
 
 In this project, there are three distinct coordinate systems:
 
-- The coordinate system of the page (e. g. `4133 x 5846 px`).
+- The coordinate system of the paper (e. g. `4133 x 5846 px`).
 - The coordinate system of the grid on the paper (e. g. `180 x 270`).
 - The coordinate system of the data that is displayed on the grid (this depends on the actual data; e. g. the data's maximum value in x direction might be $10^6$).
 
 All coordinate systems are oriented with numbers increasing upwards and rightwards.
 
-### Global input variables
+### Config file
 
 | Parameter | Coordinate system | Meaning |
 | --- | --- | --- |
-| `pageWidth` | page | Page width in `px` |
-| `pageHeight` | page | Page height in `px` |
-| `crossSize` | page | Size of the displayed data points |
-| `axisTickSize` | page | Size of the axis ticks |
-| `gridX` | page | x-position of the bottom left corner of the grid on the page |
-| `gridY` | page | y-position of the bottom left corner of the grid on the page |
-| `gridWidth` | page | width of the bottom left corner of the grid on the page |
-| `gridHeight` | page | height of the bottom left corner of the grid on the page |
-| `gridHorCount` | grid | number of grid boxes in the horizontal direction |
-| `gridHorBlockCount` | grid | number of grid boxes per horizontal grid block (usually this is 10); this number should divide `gridHorCount` |
-| `gridVertBlockCount` | grid | number of grid boxes per vertical grid block (usually this is 10); this number should divide `gridVertCount` |
+| `paper/file` | - | relative path of your input pdf file (usually either a blank paper or millimeter paper) |
+| `paper/width` | paper | paper width in `px` |
+| `paper/height` | paper | paper height in `px` |
+| `grid/width` | paper | width of the bottom left corner of the grid on the paper |
+| `grid/height` | paper | height of the bottom left corner of the grid on the paper |
+| `grid/x` | paper | x-position of the bottom left corner of the grid on the paper |
+| `grid/y` | paper | y-position of the bottom left corner of the grid on the paper |
+| `grid/num_x_blocks` | grid | number of grid boxes in the horizontal direction |
+| `grid/num_y_blocks` | grid | number of grid boxes in the vertical direction |
+| `grid/num_x_blocks_per_super_block` | grid | number of grid boxes per horizontal grid block (usually this is 10); this number should divide `grid/num_x_blocks` |
+| `grid/num_y_blocks_per_super_block` | grid | number of grid boxes per vertical grid block (usually this is 10); this number should divide `grid/num_y_blocks` |
+| `drawing/cross_size` | paper | Size of the displayed data points |
+| `drawing/axis_tick_size` | paper | Size of the axis ticks |
 | `csvFilePath` | - | relative path of your csv file (see below for more information on the csv file) |
-| `inputFilePath` | - | relative path of your input pdf file (usually either a blank page or millimeter paper) |
-| `outputFilePath` | - | relative path of your output pdf file (this should be different from `inputFilePath`!) |
+| `outputFilePath` | - | relative path of your output pdf file |
 | `factors` | - | array of coordinate axis scale factors (TODO: explain!) |
 | `shouldContainOriginX` | - | whether the origin of the x axis should be included |
 | `shouldContainOriginY` | - | whether the origin of the y axis should be included |
