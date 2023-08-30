@@ -107,7 +107,7 @@ class Drawer:
         num_data = self.trafo.grid_to_num_data(num_grid, Axis.VERTICAL)
         label = f'{num_data:.2e}'
 
-        coords = self.trafo.get_pdf_coords_from_grid_coords(
+        coords = self.trafo.get_pdf_coords_for_point_on_axis(
             Axis.VERTICAL, num_grid)
 
         points = [(coords[0]-self.axis_tick_size/2, coords[1]),
@@ -132,7 +132,7 @@ class Drawer:
         num_data = self.trafo.grid_to_num_data(num_grid, Axis.HORIZONTAL)
         label = f'{num_data:.2e}'
 
-        coords = self.trafo.get_pdf_coords_from_grid_coords(
+        coords = self.trafo.get_pdf_coords_for_point_on_axis(
             Axis.HORIZONTAL, num_grid)
 
         points = [(coords[0], coords[1] - self.axis_tick_size/2),
@@ -159,9 +159,9 @@ class Drawer:
         else:
             num_blocks = self.num_y_blocks * self.num_y_tiny_blocks_per_block
 
-        coords_start = self.trafo.get_pdf_coords_from_grid_coords(
+        coords_start = self.trafo.get_pdf_coords_for_point_on_axis(
             axis, 0)
-        coords_end = self.trafo.get_pdf_coords_from_grid_coords(
+        coords_end = self.trafo.get_pdf_coords_for_point_on_axis(
             axis, num_blocks)
 
         self.a.add_annotation(

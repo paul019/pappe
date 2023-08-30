@@ -175,7 +175,7 @@ class Transformer:
             self.num_total_y_blocks + self.grid_config['y']
         return (grid_x, grid_y)
 
-    def get_pdf_coords_from_grid_coords(self, axis: Axis, value: float) -> tuple[float, float]:
+    def get_pdf_coords_for_point_on_axis(self, axis: Axis, value: float) -> tuple[float, float]:
         if axis == Axis.VERTICAL:
             x = self.offset_x if self.should_contain_origin_x else 0
             y = value
