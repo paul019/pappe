@@ -185,9 +185,9 @@ class Transformer:
 
         return self._get_pdf_coords_from_grid_coords(x, y)
 
-    def grid_to_num_data(self, num_grid: int, axis: Axis) -> int:
+    def grid_coord_to_data_label(self, grid_coord: int, axis: Axis) -> float:
         offset = self.offset_x if axis == Axis.HORIZONTAL else self.offset_y
         scale = self.scale_x if axis == Axis.HORIZONTAL else self.scale_y
         point_offset = self.points_offset_x if axis == Axis.HORIZONTAL else self.points_offset_y
 
-        return (num_grid-offset)/scale + point_offset
+        return (grid_coord-offset)/scale + point_offset
