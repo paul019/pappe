@@ -132,24 +132,17 @@ class Transformer:
             scale_y = min(offset_y / (-min_y),
                           (self.num_total_y_blocks - offset_y) / max_y)
 
+        # Refine scaling
         # TODO: outsource
-        factors = [2, 4, 5]
-        factors.sort()
+        factors_x = [2, 4, 5]
+        factors_y = [2, 4, 5]
+        factors_x.sort()
+        factors_y.sort()
 
-        scale_x_rounded_down = pow(10, math.floor(math.log10(scale_x)))
-        scale_x = scale_x_rounded_down
-        for factor in factors:
-            scale_x_trial = scale_x_rounded_down * factor
-            if max_x * scale_x_trial + offset_x <= self.num_total_x_blocks\
-                    and min_x * scale_x_trial + offset_x >= 0:
-                scale_x = scale_x_trial
-
-        scale_y_rounded_down = pow(10, math.floor(math.log10(scale_y)))
-        scale_y = scale_y_rounded_down
-        for factor in factors:
-            scale_y_trial = scale_y_rounded_down * factor
-            if max_y * scale_y_trial + offset_y <= self.num_total_y_blocks and min_y * scale_y_trial + offset_y >= 0:
-                scale_y = scale_y_trial
+        scale_x = self._refine_scale(scale_x, factors_x,
+                                     min_x, max_x, offset_x, self.num_total_x_blocks)
+        scale_y = self._refine_scale(scale_x, factors_x,
+                                     min_y, max_y, offset_y, self.num_total_y_blocks)
 
         self.offset_x = offset_x
         self.offset_y = offset_y
@@ -159,6 +152,22 @@ class Transformer:
         self.points_offset_y = points_offset_y
 
         return measurements
+
+    def _refine_scale(self, scale: float, factors: list[int],
+                      min: float, max: float, offset: float, num_total_blocks: int) -> float:
+        scale_rounded_down = pow(10, math.floor(math.log10(scale)))
+        scale_refined = scale_rounded_down
+
+        for factor in factors:
+            scale_trial = scale_rounded_down * factor
+
+            fits_min = min * scale_trial + offset >= 0
+            fits_max = max * scale_trial + offset <= num_total_blocks
+
+            if fits_min and fits_max:
+                scale_refined = scale_trial
+
+        return scale_refined
 
     def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
         grid_x = (x*self.scale_x+self.offset_x) * \
