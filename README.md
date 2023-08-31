@@ -1,8 +1,13 @@
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/685048321/921f44fe-e847-4eaa-8e6f-c04297e37949" width="300px" />
+  <img src="https://repository-images.githubusercontent.com/685048321/921f44fe-e847-4eaa-8e6f-c04297e37949" width="350px" />
   <p align="center">A CLI to draw your data on top of millimeter paper</p>
 </p>
- 
+
+*pappe* enables you to plot data (including error bars) on top of a given sheet of millimeter paper. It manages everything for you -- including the axis scaling. This way, you can use the tool's output as a template for your own diagram on millimeter paper.
+
+Currently, pappe includes one type of millimeter paper in two orientations (portrait and landscape). However, you can also add your own millimeter paper (see advanced documentation).
+
+
 ## Run
 
 You need to have [Python 3.11](https://www.python.org/downloads/) installed, so that the TOML parser is available.
@@ -16,13 +21,6 @@ python3 pappe.py ./data/data.csv ./data/out.pdf
 ```
 
 See the CLI help for more information. Alter the `config.toml` file to change the appearance.
-
-
-## Use case
-
-This tool enables you to plot data (including error bars) on top of a given sheet of millimeter paper. The tool manages everything for you – including the axis scaling. This way, you can use the tool's output as a template for your own diagram on millimeter paper.
-
-Currently, the tool includes one type of millimeter paper in two orientations (portrait and landscape). However, you can also add your own millimeter paper (see advanced documentation).
 
 
 ## Basic documentation
