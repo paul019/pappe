@@ -33,17 +33,15 @@ python3 pappe.py <path to CSV> <PDF output path>
 
 File paths are *relative* (see also `Sample usage` above).
 
+
 <details>
 <summary><b>CSV file</b></summary>
 
-The supplied CSV file should have 2 to 4 columns and it should *not* have a header row. Each row represents one data point. This is what the columens are for:
+The supplied CSV file should have 2 to 4 columns and it must *not* have a header row. Each row represents one data point. This is what the columns are for:
 
-| Column No. | Content |
-| --- | --- |
-| __1__ | x-value |
-| __2__ | y-value |
-| __3__ (optional) | lower error of y-value* |
-| __4__ (optional) | upper error of y-value* |
+| **Column 1** | **Column 2** | **Column 3**           | **Column 4** |
+| ---          | ---          | ---                    | ---          |
+| x-value      | y-value      | lower error of y-value* | upper error of y-value* |
 
 \*Note: If only three columns are supplied, the third column's content is interpreted as a *symmetrical* error of the y-value.
 </details>
