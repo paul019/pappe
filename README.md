@@ -25,13 +25,13 @@ See the CLI help for more information. Alter the `config.toml` file to change th
 
 ## Basic documentation
 
-This tool uses a CSV file as input (see below). You can simply use the tool by specifying the path your CSV file as well as the desired output path:
+To use pappe, specify the path to a CSV file holding the data as well as the desired output path for the PDF file.
 
 ```
-python3 pappe.py <path to CSV> <desired output path>
+python3 pappe.py <path to CSV> <PDF output path>
 ```
 
-Note that the file paths are *relative* paths. Also see 'Sample usage' for an example (see above).
+File paths are *relative* (see also `Sample usage` above).
 
 <details>
 <summary><b>CSV file</b></summary>
