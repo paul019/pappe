@@ -13,9 +13,11 @@ Install the necessary python package used to annotate the PDF:
 
 `pip3 install pdf_annotate`
 
-**Sample usage**:
+**Sample usage**
 
-`python3 pappe.py ./data/data.csv ./data/out.pdf`
+```
+python3 pappe.py ./data/data.csv ./data/out.pdf
+```
 
 See the CLI help for more information. Alter the `config.toml` file to change the appearance.
 
