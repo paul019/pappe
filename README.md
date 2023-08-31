@@ -3,7 +3,7 @@
   <p align="center">A CLI to draw your data on top of millimeter paper</p>
 </p>
 
-*pappe* enables you to plot data (including error bars) on top of a given sheet of millimeter paper. It manages everything for you -- including the axis scaling. This way, you can use the tool's output as a template for your own diagram on millimeter paper.
+*pappe* enables you to plot data (including error bars) on top of a given sheet of millimeter paper. It manages everything for you — including the axis scaling. This way, you can use the tool's output as a template for your own diagram on millimeter paper.
 
 Currently, pappe includes one type of millimeter paper in two orientations (portrait and landscape). However, you can also add your own millimeter paper (see advanced documentation).
 
