@@ -62,26 +62,26 @@ To change basic settings, change the `config.toml` file. The following parameter
 
 ## Advanced documentation
 
-As stated above, you can easily add your own millimeter paper by following the steps mentioned hereafter.
+As stated above, you can easily add your own millimeter paper by following these steps:
 
 1. Add the pdf file of your millimeter paper to the `grids` folder.
-2. Add an empty text file to the `grids` folder and name it `grid{n}.toml`. Populate this text file with the parameters mentioned below.
+2. Add a new config file called `grid{n}.toml` to the `grids` folder. Populate it with the parameters mentioned below.
+
 
 <details>
 <summary><b>Grid config file</b></summary>
 
-Adding your own millimeter paper requires you to 'measure' it. Read the following table chronologically for instructions:
+Adding your own millimeter paper requires you to "measure" it. Read the following table chronologically for instructions:
 
-| Parameter | Meaning / instructions |
+| Parameter | Meaning / Instructions |
 | --- | --- |
 | `paper/file` | Relative path of your grid pdf file (relative from the project's entry point). |
 | `paper/width`, `paper/height` | Export your millimeter paper pdf file as a `jpg` image (e. g. with `300 ppi`). Input this image's pixel dimensions here. |
-| `grid/width`, `grid/height` | Use a suitable image viewing application* to determine the pixel dimensions of the actual grid on your millimeter paper. |
-| `grid/x`, `grid/y` | Use a suitable image viewing application* to determine the pixel position of the lower left corner of the actual grid on your millimeter paper. (This position should be measured from the lower left corner of your image.) |
+| `grid/width`, `grid/height` | Use a suitable image viewing application to determine the pixel dimensions of the actual grid on your millimeter paper. |
+| `grid/x`, `grid/y` | Use a suitable image viewing application to determine the pixel position of the lower left corner of the actual grid on your millimeter paper. (This position should be measured from the lower left corner of your image.) |
 | `grid/num_x_blocks`, `grid/num_y_blocks` | The number of *big* blocks on your millimeter paper. For example `18 x 27`. |
-| `grid/num_x_tiny_blocks_per_block`, `grid/num_y_tiny_blocks_per_block` | Number of tiny blocks per big block. Usually, this number should be `10`. |
+| `grid/num_x_tiny_blocks_per_block`, `grid/num_y_tiny_blocks_per_block` | Number of *tiny* blocks per big block. Usually, this number should be `10`. |
 | `drawing/cross_size` | Pixel size of the displayed data points. |
 | `drawing/axis_tick_size` | Pixel size of the axis ticks. |
 
-\*For example preview on MacOS.
 </details>
