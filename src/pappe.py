@@ -1,4 +1,4 @@
-from pap_parser import parse_csv, parse_config
+from pappe_parser import parse_csv, parse_config
 from drawer import Drawer
 from transformer import Transformer
 
