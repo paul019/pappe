@@ -1,8 +1,8 @@
 import argparse
 
-from pappe_parser import parse_csv, parse_config
-from drawer import Drawer
-from transformer import Transformer
+from src.pappe_parser import parse_csv, parse_config
+from src.drawer import Drawer
+from src.transformer import Transformer
 
 
 def main():

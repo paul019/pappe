@@ -1,7 +1,7 @@
 import tomllib
 import csv
 
-from measurement import Measurement
+from src.measurement import Measurement
 
 
 def parse_csv(path: str) -> list[Measurement]:

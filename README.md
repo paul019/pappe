@@ -15,7 +15,7 @@ Install the necessary python package used to annotate the PDF:
 
 Run the script:
 
-`python3 src/pappe.py`
+`python3 pappe.py`
 
 
 ## Documentation

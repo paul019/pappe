@@ -1,7 +1,7 @@
 from pdf_annotate import PdfAnnotator, Location, Appearance
 
-from measurement import Measurement
-from transformer import Axis, Transformer
+from src.measurement import Measurement
+from src.transformer import Axis, Transformer
 
 INDICATOR_COLOR = (1, 0, 0)
 AXIS_COLOR = (0, 0, 0)
