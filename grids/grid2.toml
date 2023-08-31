@@ -9,10 +9,10 @@ width = 5318
 height = 3543
 x = 264
 y = 406
-num_x_blocks = 270
-num_x_blocks_per_super_block = 10
-num_y_blocks = 180
-num_y_blocks_per_super_block = 10
+num_x_blocks = 27
+num_x_tiny_blocks_per_block = 10
+num_y_blocks = 18
+num_y_tiny_blocks_per_block = 10
 
 [drawing]
 cross_size = 10
