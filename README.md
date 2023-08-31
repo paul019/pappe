@@ -84,4 +84,6 @@ Adding your own millimeter paper requires you to 'measure' it. Read the followin
 | `grid/num_x_tiny_blocks_per_block`, `grid/num_x_tiny_blocks_per_block` | Number of tiny blocks per big block. Usually, this number should be `10`. |
 | `drawing/cross_size` | Pixel size of the displayed data points. |
 | `drawing/axis_tick_size` | Pixel size of the axis ticks. |
+
+\*For example preview on MacOS.
 </details>
