@@ -44,6 +44,8 @@ The supplied CSV file should have 2 to 4 columns and it must *not* have a header
 | x-value      | y-value      | lower error of y-value* | upper error of y-value* |
 
 \*Note: If only three columns are supplied, the third column's content is interpreted as a *symmetrical* error of the y-value.
+
+See the [`data/data.csv`](./data/data.csv) file for an example.
 </details>
 
 
@@ -57,6 +59,8 @@ To change basic settings, change the `config.toml` file. The following parameter
 | `grid_variant` | `1` or `2` | `1` | `1` for portrait paper and `2` for landscape paper (you can also add your own paper; see advanced documentation). |
 | `factors/x`, `factors/y` | `List<int>` | `[1, 2, 3, 4, 5, 6, 8, 9]` | The tool first tries to scale the data by the largest possible power of ten (so that your data still fits on the grid). It then chooses one of the supplied factors to further scale up the data; here again, it uses the largest possible factor. Change this array in order to obtain the desired scaling of the data in `x`- and `y`-direction. |
 | `origins/x`, `origins/y` | `bool` | `false` | If you want the `x`- or `y`-axis to include the value `0`, set this to `true`. |
+
+See the [`config.toml`](./config.toml) file for an example.
 </details>
 
 
@@ -84,4 +88,5 @@ Adding your own millimeter paper requires you to "measure" it. Read the followin
 | `drawing/cross_size` | Pixel size of the displayed data points. |
 | `drawing/axis_tick_size` | Pixel size of the axis ticks. |
 
+See the [`grids/grid1.toml`](./grids/grid1.toml) file for an example.
 </details>
