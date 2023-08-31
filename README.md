@@ -1,21 +1,24 @@
-# A helping tool to create diagrams in PAP1
+<p align="center">
+  <img src="https://github.com/paul019/pap1-helper/assets/37160523/5434d969-21d4-475f-86d9-9dde22bd7a77" width="300px" />
+  <p align="center">A CLI to draw your data on top of millimeter paper</p>
+</p>
  
-## Installation
+## Run
 
-First, install the necessary python package:
+You need to have [Python 3.11](https://www.python.org/downloads/) installed, so that the TOML parser is available.
 
-`pip3 install pdf_annotate`
+Install the necessary python package used to annotate the PDF: `pip3 install pdf_annotate`
 
-Now, clone this repository on your local machine:
+**Sample usage**
 
-`git clone https://github.com/paul019/pap1-helper`
+```
+python3 pappe.py ./data/data.csv ./data/out.pdf
+```
 
-To run the script, use:
-
-`python3 index.py`
+See the CLI help for more information. Alter the `config.toml` file to change the appearance.
 
 
-## Documentation
+## Documentation (outdated)
 
 ### Coordinate systems
 
