@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/paul019/pap1-helper/assets/37160523/5434d969-21d4-475f-86d9-9dde22bd7a77" width="300px" />
+  <img src="https://github.com/paul019/pappe/assets/37160523/151f44e6-318d-43c6-ba63-8fab64548b6b" width="300px" />
   <p align="center">A CLI to draw your data on top of millimeter paper</p>
 </p>
  
