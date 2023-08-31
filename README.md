@@ -18,69 +18,72 @@ python3 pappe.py ./data/data.csv ./data/out.pdf
 See the CLI help for more information. Alter the `config.toml` file to change the appearance.
 
 
-## Documentation (outdated)
+## Use case
 
-### Coordinate systems
+This tool enables you to plot data (including error bars) on top of a given sheet of millimeter paper. The tool manages everything for you – including the axis scaling. This way, you can use the tool's output as a template for your own diagram on millimeter paper.
 
-In this project, there are three distinct coordinate systems:
+Currently, the tool includes one type of millimeter paper in two orientations (portrait and landscape). However, you can also add your own millimeter paper (see advanced documentation).
 
-- The coordinate system of the page (e. g. `4133 x 5846 px`).
-- The coordinate system of the grid on the paper (e. g. `180 x 270`).
-- The coordinate system of the data that is displayed on the grid (this depends on the actual data; e. g. the data's maximum value in x direction might be $10^6$).
 
-All coordinate systems are oriented with numbers increasing upwards and rightwards.
+## Basic documentation
 
-### Global input variables
+This tool uses a CSV file as input (see below). You can simply use the tool by specifying the path your CSV file as well as the desired output path:
 
-| Parameter | Coordinate system | Meaning |
-| --- | --- | --- |
-| `pageWidth` | page | Page width in `px` |
-| `pageHeight` | page | Page height in `px` |
-| `crossSize` | page | Size of the displayed data points |
-| `axisTickSize` | page | Size of the axis ticks |
-| `gridX` | page | x-position of the bottom left corner of the grid on the page |
-| `gridY` | page | y-position of the bottom left corner of the grid on the page |
-| `gridWidth` | page | width of the bottom left corner of the grid on the page |
-| `gridHeight` | page | height of the bottom left corner of the grid on the page |
-| `gridHorCount` | grid | number of grid boxes in the horizontal direction |
-| `gridHorBlockCount` | grid | number of grid boxes per horizontal grid block (usually this is 10); this number should divide `gridHorCount` |
-| `gridVertBlockCount` | grid | number of grid boxes per vertical grid block (usually this is 10); this number should divide `gridVertCount` |
-| `csvFilePath` | - | relative path of your csv file (see below for more information on the csv file) |
-| `inputFilePath` | - | relative path of your input pdf file (usually either a blank page or millimeter paper) |
-| `outputFilePath` | - | relative path of your output pdf file (this should be different from `inputFilePath`!) |
-| `factors` | - | array of coordinate axis scale factors (TODO: explain!) |
-| `shouldContainOriginX` | - | whether the origin of the x axis should be included |
-| `shouldContainOriginY` | - | whether the origin of the y axis should be included |
+```
+python3 pappe.py <path to CSV> <desired output path>
+```
 
-### Other important variables
+Note that the file paths are *relative* paths. Also see 'Sample usage' for an example (see above).
 
-| Variable | Coordinate system | Meaning |
-| --- | --- | --- |
-| `minX` etc. | data | maximum x value in the dataset (including error bars!) |
-| `scaleX` etc. | grid, data | scale factor between the grid coordinate system and the data coordinate system |
-| `offsetX` etc. | grid | x-location of the data coordinate system origin within the grid coordinate system |
-| `pointsOffsetX` etc. | data | if the user decides to not include the origin (see `shouldContainOriginX`), this variable adds an offset to the data to create a 'virtual' origin to the data; otherwise this variable is `0` |
-| `points` | - | array of data points; each entry is a tupel of x and y values |
-| `errors` | - | array of errors; each entry is a tupel of lower and upper errors; if there is no error value, the tupel contains `-1` |
+<details>
+<summary><b>CSV file</b></summary>
 
-### CSV file structure
+The supplied CSV file should have 2 to 4 columns and it should *not* have a header row. Each row represents one data point. This is what the columens are for:
 
-Depending on how many rows the csv file has, its content is interpreted differently:
+| Column No. | Content |
+| --- | --- |
+| __1__ | x-value |
+| __2__ | y-value |
+| __3__ (optional) | lower error of y-value* |
+| __4__ (optional) | upper error of y-value* |
 
-#### 2 Rows
+\*Note: If only three columns are supplied, the third column's content is interpreted as a *symmetrical* error of the y-value.
+</details>
 
-- 1st row: values for x-axis
-- 2nd row: values for y-axis
+<details>
+<summary><b>Changing settings</b></summary>
 
-#### 3 Rows
+To change basic settings, change the `config.toml` file. The following paramters can be set:
 
-- 1st row: values for x-axis
-- 2nd row: values for y-axis
-- 3rd row: errors for y-axis values
+| Parameter | Type | Default | Meaning |
+| --------- | ---- | ------- | ------- |
+| `grid_variant` | `1` or `2` | `1` | `1` for portrait paper and `2` for landscape paper (you can also add your own paper; see below). |
+| `factors/x`, `factors/y` | `List<int>` | `[1, 2, 3, 4, 5, 6, 8, 9]` | The tool first tries to scale the data by a power of ten; it uses the largest possible power of ten. It than chooses one of the supplied factors to further scale up the data; again, it uses the largest possible factor. Change this array in order to obtain the desired scaling of the data in `x`- and `y`-direction. |
+| `origins/x`, `origins/y` | `bool` | `false` | If you want the `x`- or `y`-axis to include the value `0` in any case, set this to `true`. |
+</details>
 
-#### 4 Rows
+## Advanced documentation
 
-- 1st row: values for x-axis
-- 2nd row: values for y-axis
-- 3rd row: lower errors for y-axis values
-- 4th row: upper errors for y-axis values
+As stated above, you can easily add your own millimeter paper by following the steps mentioned hereafter.
+
+1. Add the pdf file of your millimeter paper to the `grids` folder.
+2. Add an empty text file to the `grids` folder and name it `grid{n}.toml`. Populate this text file with the parameters mentioned below.
+
+<details>
+<summary><b>Grid config file</b></summary>
+
+Adding your own millimeter paper requires you to 'measure' it. Read the following table chronologically for instructions:
+
+| Parameter | Meaning / instructions |
+| --- | --- |
+| `paper/file` | Relative path of your grid pdf file (relative from the project's entry point). |
+| `paper/width`, `paper/height` | Export your millimeter paper pdf file as a `jpg` image (e. g. with `300 ppi`). Input this image's pixel dimensions here. |
+| `grid/width`, `grid/height` | Use a suitable image viewing application* to determine the pixel dimensions of the actual grid on your millimeter paper. |
+| `grid/x`, `grid/y` | Use a suitable image viewing application* to determine the pixel position of the lower left corner of the actual grid on your millimeter paper. (This position should be measured from the lower left corner of your image.) |
+| `grid/num_x_blocks`, `grid/num_y_blocks` | The number of *big* blocks on your millimeter paper. For example `18 x 27`. |
+| `grid/num_x_tiny_blocks_per_block`, `grid/num_x_tiny_blocks_per_block` | Number of tiny blocks per big block. Usually, this number should be `10`. |
+| `drawing/cross_size` | Pixel size of the displayed data points. |
+| `drawing/axis_tick_size` | Pixel size of the axis ticks. |
+
+\*For example preview on MacOS.
+</details>
