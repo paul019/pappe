@@ -46,17 +46,19 @@ The supplied CSV file should have 2 to 4 columns and it must *not* have a header
 \*Note: If only three columns are supplied, the third column's content is interpreted as a *symmetrical* error of the y-value.
 </details>
 
+
 <details>
 <summary><b>Changing settings</b></summary>
 
-To change basic settings, change the `config.toml` file. The following paramters can be set:
+To change basic settings, change the `config.toml` file. The following parameters can be set:
 
 | Parameter | Type | Default | Meaning |
 | --------- | ---- | ------- | ------- |
-| `grid_variant` | `1` or `2` | `1` | `1` for portrait paper and `2` for landscape paper (you can also add your own paper; see below). |
-| `factors/x`, `factors/y` | `List<int>` | `[1, 2, 3, 4, 5, 6, 8, 9]` | The tool first tries to scale the data by a power of ten; it uses the largest possible power of ten. It than chooses one of the supplied factors to further scale up the data; again, it uses the largest possible factor. Change this array in order to obtain the desired scaling of the data in `x`- and `y`-direction. |
-| `origins/x`, `origins/y` | `bool` | `false` | If you want the `x`- or `y`-axis to include the value `0` in any case, set this to `true`. |
+| `grid_variant` | `1` or `2` | `1` | `1` for portrait paper and `2` for landscape paper (you can also add your own paper; see advanced documentation). |
+| `factors/x`, `factors/y` | `List<int>` | `[1, 2, 3, 4, 5, 6, 8, 9]` | The tool first tries to scale the data by the largest possible power of ten (so that your data still fits on the grid). It then chooses one of the supplied factors to further scale up the data; here again, it uses the largest possible factor. Change this array in order to obtain the desired scaling of the data in `x`- and `y`-direction. |
+| `origins/x`, `origins/y` | `bool` | `false` | If you want the `x`- or `y`-axis to include the value `0`, set this to `true`. |
 </details>
+
 
 ## Advanced documentation
 
