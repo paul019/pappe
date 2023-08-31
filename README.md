@@ -81,7 +81,7 @@ Adding your own millimeter paper requires you to 'measure' it. Read the followin
 | `grid/width`, `grid/height` | Use a suitable image viewing application* to determine the pixel dimensions of the actual grid on your millimeter paper. |
 | `grid/x`, `grid/y` | Use a suitable image viewing application* to determine the pixel position of the lower left corner of the actual grid on your millimeter paper. (This position should be measured from the lower left corner of your image.) |
 | `grid/num_x_blocks`, `grid/num_y_blocks` | The number of *big* blocks on your millimeter paper. For example `18 x 27`. |
-| `grid/num_x_tiny_blocks_per_block`, `grid/num_x_tiny_blocks_per_block` | Number of tiny blocks per big block. Usually, this number should be `10`. |
+| `grid/num_x_tiny_blocks_per_block`, `grid/num_y_tiny_blocks_per_block` | Number of tiny blocks per big block. Usually, this number should be `10`. |
 | `drawing/cross_size` | Pixel size of the displayed data points. |
 | `drawing/axis_tick_size` | Pixel size of the axis ticks. |
 
