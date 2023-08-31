@@ -1,6 +1,7 @@
-from measurement import Measurement
 import math
 from enum import Enum
+
+from src.measurement import Measurement
 
 
 class Axis(Enum):
