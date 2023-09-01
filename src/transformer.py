@@ -76,6 +76,7 @@ class Transformer:
         self.points_offset_x = points_offset_x
         self.points_offset_y = points_offset_y
 
+        print()
         print(f'SCALING')
         x_equivalent = self.grid_config['num_x_tiny_blocks_per_block'] / factor_x
         y_equivalent = self.grid_config['num_y_tiny_blocks_per_block'] / factor_y
@@ -83,6 +84,7 @@ class Transformer:
               + f' (factor chosen: {factor_x})')
         print(f'1 tiny block equals {y_equivalent:.3f} y-units' +
               f' (factor chosen: {factor_y})')
+        print()
 
         return measurements
 
