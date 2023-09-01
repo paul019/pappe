@@ -103,7 +103,7 @@ class Drawer:
 
     def _draw_vertical_axis_number(self, num_grid):
         num_data = self.trafo.grid_coord_to_data_label(num_grid, Axis.VERTICAL)
-        label = f'{num_data:.2e}'
+        label = f'{num_data:.2f}'
 
         coords = self.trafo.get_pdf_coords_for_point_on_axis(
             Axis.VERTICAL, num_grid)
@@ -127,7 +127,7 @@ class Drawer:
     def _draw_horizontal_axis_number(self, num_grid):
         num_data = self.trafo.grid_coord_to_data_label(
             num_grid, Axis.HORIZONTAL)
-        label = f'{num_data:.2e}'
+        label = f'{num_data:.2f}'
 
         coords = self.trafo.get_pdf_coords_for_point_on_axis(
             Axis.HORIZONTAL, num_grid)
