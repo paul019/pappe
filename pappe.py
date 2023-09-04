@@ -3,6 +3,7 @@ import argparse
 from src.pappe_parser import parse_csv, parse_config
 from src.drawer import Drawer
 from src.transformer import Transformer
+from src.linear_regressor import do_linear_regression, LinearRegression
 
 
 def main():
@@ -32,6 +33,21 @@ def main():
                         config['factors'], config['origins'])
     drawer = Drawer(trafo, complete_grid_config)
     drawer.draw_all(measurements)
+
+    # Regression
+    if config['regression']['do_linear_regression']:
+        regression = do_linear_regression(measurements)
+
+        m, dm, n, dn = regression.m, regression.m_error, regression.n, regression.n_error
+
+        print()
+        print('Linear regression:')
+        print('y = m * x + n')
+        print('m  = {}'.format(m))
+        print('dm = {}'.format(dm))
+        print('n  = {}'.format(n))
+        print('dn = {}'.format(dn))
+        print()
 
     # Output
     drawer.save(args.output)

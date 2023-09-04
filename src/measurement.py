@@ -5,6 +5,9 @@ class Error:
 
     def exists(self):
         return self.lower_error != 0.0 or self.upper_error != 0.0
+    
+    def avg_error(self):
+        return (self.lower_error + self.upper_error) / 2.0
 
 class Measurement:
     """

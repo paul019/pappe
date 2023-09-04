@@ -1,9 +1,12 @@
-grid_variant = 1
+grid_variant = 2
 
 [factors]
 x = [1, 2, 3, 4, 5, 6, 8, 9]
 y = [1, 2, 3, 4, 5, 6, 8, 9]
 
 [origins]
-x = false
-y = false
+x = true
+y = true
+
+[regression]
+do_linear_regression = true
