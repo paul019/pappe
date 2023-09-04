@@ -213,9 +213,9 @@ class Drawer:
         print('Linear regression:')
         print('y = m * x + n')
         print('m  = {}'.format(m))
-        print('dm = {}'.format(dm))
+        print('Δm = {}'.format(dm))
         print('n  = {}'.format(n))
-        print('dn = {}'.format(dn))
+        print('Δn = {}'.format(dn))
         print()
 
     def _draw_curve_of_best_fit(self):
