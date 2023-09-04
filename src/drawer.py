@@ -2,6 +2,7 @@ from pdf_annotate import PdfAnnotator, Location, Appearance
 
 from src.measurement import Measurement
 from src.transformer import Axis, Transformer
+from src.linear_regressor import LinearFunction
 
 INDICATOR_COLOR = (1, 0, 0)
 AXIS_COLOR = (0, 0, 0)
@@ -41,19 +42,22 @@ class Drawer:
     def draw_all(self, measurements: list[Measurement], draw_regression: bool):
         measurements = self.trafo.analyze_and_offset_measurements(measurements)
 
+        # Draw axes
         self._draw_axis(Axis.HORIZONTAL)
         self._draw_axis(Axis.VERTICAL)
         self._draw_axes_numbers()
 
+        # Draw regression
+        if draw_regression:
+            self._draw_regression()
+
+        # Draw measurements
         for m in measurements:
             self._draw_datapoint(m)
             if m.x_error.exists():
                 self._draw_error_bar(m, Axis.HORIZONTAL)
             if m.y_error.exists():
                 self._draw_error_bar(m, Axis.VERTICAL)
-
-        if draw_regression:
-            self._draw_regression()
 
     def _draw_axes_numbers(self):
         for i in range(self.num_x_blocks + 1):
@@ -205,11 +209,18 @@ class Drawer:
         print('dn = {}'.format(dn))
         print()
 
+        self._draw_linear_function(regression.function())
+    
+    def _draw_linear_function(self, f: LinearFunction):
+        """
+        Draw linear function of the form y = m * x + b.
+        """
+
         grid_start_x = self.trafo.get_data_point_from_grid_coords(0, 0)[0]
         grid_end_x = self.trafo.get_data_point_from_grid_coords(self.num_x_blocks * self.num_x_tiny_blocks_per_block, 0)[0]
 
-        start_y = regression.eval(grid_start_x)
-        end_y = regression.eval(grid_end_x)
+        start_y = f.eval(grid_start_x)
+        end_y = f.eval(grid_end_x)
 
         coords_start = [
             self.trafo.get_pdf_coords_from_grid_coords(0, 0)[0],

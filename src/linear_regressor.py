@@ -12,6 +12,18 @@ class LinearRegression:
         self.n = n
         self.n_error = n_error
 
+    def function(self):
+        return LinearFunction(self.m, self.n)
+    
+class LinearFunction:
+    """
+    Stores a linear function of the form y = m * x + n
+    """
+
+    def __init__(self, m: float, n: float) -> None:
+        self.m = m
+        self.n = n
+
     def eval(self, x: float) -> float:
         return self.m * x + self.n
 
