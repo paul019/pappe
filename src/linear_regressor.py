@@ -6,11 +6,14 @@ class LinearRegression:
     Stores a linear regression of the form y = m * x + n
     """
 
-    def __init__(self, m, m_error, n, n_error) -> None:
+    def __init__(self, m: float, m_error: float, n: float, n_error: float) -> None:
         self.m = m
         self.m_error = m_error
         self.n = n
         self.n_error = n_error
+
+    def eval(self, x: float) -> float:
+        return self.m * x + self.n
 
 def do_linear_regression(measurements: list[Measurement]):
     """

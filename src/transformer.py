@@ -2,6 +2,7 @@ import math
 from enum import Enum
 
 from src.measurement import Measurement
+from src.linear_regressor import do_linear_regression
 
 
 class Axis(Enum):
@@ -33,6 +34,8 @@ class Transformer:
             grid_config['num_y_tiny_blocks_per_block']
 
     def analyze_and_offset_measurements(self, measurements: list[Measurement]):
+        self.measurements = measurements
+
         # Min/Max values
         x_values = [m.x for m in measurements]
         y_values = [m.y for m in measurements]
@@ -160,7 +163,7 @@ class Transformer:
             self.num_total_y_blocks + self.grid_config['y']
         return grid_x, grid_y
 
-    def _get_pdf_coords_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
+    def get_pdf_coords_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
         grid_x = x * self.grid_config['width'] / \
             self.num_total_x_blocks + self.grid_config['x']
         grid_y = y * self.grid_config['height'] / \
@@ -175,11 +178,23 @@ class Transformer:
             x = value
             y = self.offset_y if self.should_contain_origin_y else 0
 
-        return self._get_pdf_coords_from_grid_coords(x, y)
+        return self.get_pdf_coords_from_grid_coords(x, y)
+    
+    def get_data_point_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
+        return (
+            (x-self.offset_x)/self.scale_x,
+            (y-self.offset_y)/self.scale_y
+        )
 
     def grid_coord_to_data_label(self, grid_coord: int, axis: Axis) -> float:
-        offset = self.offset_x if axis == Axis.HORIZONTAL else self.offset_y
-        scale = self.scale_x if axis == Axis.HORIZONTAL else self.scale_y
-        point_offset = self.points_offset_x if axis == Axis.HORIZONTAL else self.points_offset_y
-
-        return (grid_coord-offset)/scale + point_offset
+        if axis == Axis.HORIZONTAL:
+            label = self.get_data_point_from_grid_coords(grid_coord, 0)[0]
+            label += self.points_offset_x
+            return label
+        else:
+            label = self.get_data_point_from_grid_coords(0, grid_coord)[1]
+            label += self.points_offset_y
+            return label
+    
+    def get_linear_regression(self):
+        return do_linear_regression(self.measurements)

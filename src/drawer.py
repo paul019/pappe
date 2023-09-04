@@ -37,7 +37,7 @@ class Drawer:
     def save(self, path: str):
         self.a.write(path)
 
-    def draw_all(self, measurements: list[Measurement]):
+    def draw_all(self, measurements: list[Measurement], draw_regression: bool):
         measurements = self.trafo.analyze_and_offset_measurements(measurements)
 
         self._draw_axis(Axis.HORIZONTAL)
@@ -50,6 +50,9 @@ class Drawer:
                 self._draw_error_bar(m, Axis.HORIZONTAL)
             if m.y_error.exists():
                 self._draw_error_bar(m, Axis.VERTICAL)
+
+        if draw_regression:
+            self._draw_regression()
 
     def _draw_axes_numbers(self):
         for i in range(self.num_x_blocks + 1):
@@ -181,6 +184,41 @@ class Drawer:
             axis, 0)
         coords_end = self.trafo.get_pdf_coords_for_point_on_axis(
             axis, num_blocks)
+
+        location = Location(points=[coords_start, coords_end], page=0)
+        self.a.add_annotation('line', location,
+                              Appearance(stroke_color=AXIS_COLOR,
+                                         stroke_width=AXIS_STROKE_WIDTH))
+        
+    def _draw_regression(self):
+        regression = self.trafo.get_linear_regression()
+
+        m, dm, n, dn = regression.m, regression.m_error, regression.n, regression.n_error
+
+        print()
+        print('Linear regression:')
+        print('y = m * x + n')
+        print('m  = {}'.format(m))
+        print('dm = {}'.format(dm))
+        print('n  = {}'.format(n))
+        print('dn = {}'.format(dn))
+        print()
+
+        grid_start_x = self.trafo.get_data_point_from_grid_coords(0, 0)[0]
+        grid_end_x = self.trafo.get_data_point_from_grid_coords(self.num_x_blocks * self.num_x_tiny_blocks_per_block, 0)[0]
+
+        start_y = regression.eval(grid_start_x)
+        end_y = regression.eval(grid_end_x)
+
+        coords_start = [
+            self.trafo.get_pdf_coords_from_grid_coords(0, 0)[0],
+            self.trafo.get_pdf_coords_from_data_point(0, start_y)[1]
+        ]
+
+        coords_end = [
+            self.trafo.get_pdf_coords_from_grid_coords(self.num_x_blocks * self.num_x_tiny_blocks_per_block, 0)[0],
+            self.trafo.get_pdf_coords_from_data_point(self.num_x_blocks * self.num_x_tiny_blocks_per_block, end_y)[1]
+        ]
 
         location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation('line', location,
