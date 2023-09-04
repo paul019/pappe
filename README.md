@@ -63,7 +63,10 @@ To change basic settings, change the `config.toml` file. The following parameter
 | --------- | ---- | ------- | ------- |
 | `grid_variant` | `1` or `2` | `1` | `1` for portrait paper and `2` for landscape paper (you can also add your own paper; see advanced documentation). |
 | `factors/x`, `factors/y` | `List<int>` | `[1, 2, 3, 4, 5, 6, 8, 9]` | The tool first tries to scale the data by the largest possible power of ten (so that your data still fits on the grid). It then chooses one of the supplied factors to further scale up the data; here again, it uses the largest possible factor. Change this array in order to obtain the desired scaling of the data in `x`- and `y`-direction. |
-| `origins/x`, `origins/y` | `bool` | `false` | If you want the `x`- or `y`-axis to include the value `0`, set this to `true`. |
+| `origins/x`, `origins/y` | `bool` | `true` | If you want the `x`- or `y`-axis to include the value `0`, set this to `true`. |
+| `linear_regression/print_parameters` | `bool` | `true` | Do a linear regression and print the computed parameters? |
+| `linear_regression/draw_curve_of_best_fit` | `bool` | `true` | Do a linear regression and draw the curve of best fit? |
+| `linear_regression/draw_error_curve_low_slope`, `linear_regression/draw_error_curve_high_slope` | `bool` | `false` | (EXPERIMENTAL) Do a linear regression and draw the error lines with lowest/highest slope within error bounds? |
 
 See the [`config.toml`](./config.toml) file.
 </details>

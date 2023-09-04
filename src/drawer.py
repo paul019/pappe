@@ -53,7 +53,7 @@ class Drawer:
         self._draw_axes_numbers()
 
         # Regression
-        if self.regressionConfig['print_linear_regression']:
+        if self.regressionConfig['print_parameters']:
             self._print_regression()
         if self.regressionConfig['draw_curve_of_best_fit']:
             self._draw_curve_of_best_fit()

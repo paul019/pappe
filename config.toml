@@ -1,4 +1,4 @@
-grid_variant = 2
+grid_variant = 1
 
 [factors]
 x = [1, 2, 3, 4, 5, 6, 8, 9]
@@ -8,8 +8,8 @@ y = [1, 2, 3, 4, 5, 6, 8, 9]
 x = true
 y = true
 
-[regression]
-print_linear_regression = true
+[linear_regression]
+print_parameters = true
 draw_curve_of_best_fit = true
 draw_error_curve_low_slope = false
 draw_error_curve_high_slope = false
