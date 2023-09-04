@@ -9,4 +9,7 @@ x = true
 y = true
 
 [regression]
-do_linear_regression = true
+print_linear_regression = true
+draw_curve_of_best_fit = true
+draw_error_curve_low_slope = false
+draw_error_curve_high_slope = false

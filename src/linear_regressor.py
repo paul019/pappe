@@ -12,8 +12,14 @@ class LinearRegression:
         self.n = n
         self.n_error = n_error
 
-    def function(self):
+    def best_fit(self):
         return LinearFunction(self.m, self.n)
+    
+    def error_curve_high_slope(self):
+        return LinearFunction(self.m + self.m_error, self.n - self.n_error)
+    
+    def error_curve_low_slope(self):
+        return LinearFunction(self.m - self.m_error, self.n + self.n_error)
     
 class LinearFunction:
     """

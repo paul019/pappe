@@ -4,8 +4,10 @@ from src.measurement import Measurement
 from src.transformer import Axis, Transformer
 from src.linear_regressor import LinearFunction
 
-INDICATOR_COLOR = (1, 0, 0)
+INDICATOR_COLOR = (0, 0, 1)
 AXIS_COLOR = (0, 0, 0)
+LINE_OF_BEST_FIT_COLOR = (0, 0, 0)
+ERROR_COLOR = (1, 0, 0)
 INDICATOR_STROKE_WIDTH = 0.5
 AXIS_STROKE_WIDTH = 1.0
 REGRESSION_STROKE_WIDTH = 0.25
@@ -17,7 +19,9 @@ class Drawer:
     measurements into PDF coordinates.
     """
 
-    def __init__(self, trafo: Transformer, config) -> None:
+    def __init__(self, trafo: Transformer, config, regressionConfig) -> None:
+        self.regressionConfig = regressionConfig
+
         paper_config = config['paper']
         grid_config = config['grid']
         drawing_config = config['drawing']
@@ -39,17 +43,24 @@ class Drawer:
     def save(self, path: str):
         self.a.write(path)
 
-    def draw_all(self, measurements: list[Measurement], draw_regression: bool):
+    def draw_all(self, measurements: list[Measurement]):
         measurements = self.trafo.analyze_and_offset_measurements(measurements)
+        self.regression = self.trafo.get_linear_regression()
 
         # Draw axes
         self._draw_axis(Axis.HORIZONTAL)
         self._draw_axis(Axis.VERTICAL)
         self._draw_axes_numbers()
 
-        # Draw regression
-        if draw_regression:
-            self._draw_regression()
+        # Regression
+        if self.regressionConfig['print_linear_regression']:
+            self._print_regression()
+        if self.regressionConfig['draw_curve_of_best_fit']:
+            self._draw_curve_of_best_fit()
+        if self.regressionConfig['draw_error_curve_low_slope']:
+            self._draw_error_curve_low_slope()
+        if self.regressionConfig['draw_error_curve_high_slope']:
+            self._draw_error_curve_high_slope()
 
         # Draw measurements
         for m in measurements:
@@ -195,10 +206,8 @@ class Drawer:
                               Appearance(stroke_color=AXIS_COLOR,
                                          stroke_width=AXIS_STROKE_WIDTH))
         
-    def _draw_regression(self):
-        regression = self.trafo.get_linear_regression()
-
-        m, dm, n, dn = regression.m, regression.m_error, regression.n, regression.n_error
+    def _print_regression(self):
+        m, dm, n, dn = self.regression.m, self.regression.m_error, self.regression.n, self.regression.n_error
 
         print()
         print('Linear regression:')
@@ -209,9 +218,16 @@ class Drawer:
         print('dn = {}'.format(dn))
         print()
 
-        self._draw_linear_function(regression.function())
+    def _draw_curve_of_best_fit(self):
+        self._draw_linear_function(self.regression.best_fit(), LINE_OF_BEST_FIT_COLOR)
+
+    def _draw_error_curve_low_slope(self):
+        self._draw_linear_function(self.regression.error_curve_low_slope(), ERROR_COLOR)
+
+    def _draw_error_curve_high_slope(self):
+        self._draw_linear_function(self.regression.error_curve_high_slope(), ERROR_COLOR)
     
-    def _draw_linear_function(self, f: LinearFunction):
+    def _draw_linear_function(self, f: LinearFunction, color: tuple[float, float, float]):
         """
         Draw linear function of the form y = m * x + b.
         """
@@ -234,5 +250,5 @@ class Drawer:
 
         location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation('line', location,
-                              Appearance(stroke_color=AXIS_COLOR,
+                              Appearance(stroke_color=color,
                                          stroke_width=REGRESSION_STROKE_WIDTH))

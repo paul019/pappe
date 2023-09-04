@@ -31,8 +31,8 @@ def main():
     # Setup drawing
     trafo = Transformer(complete_grid_config['grid'],
                         config['factors'], config['origins'])
-    drawer = Drawer(trafo, complete_grid_config)
-    drawer.draw_all(measurements, config['regression']['do_linear_regression'])
+    drawer = Drawer(trafo, complete_grid_config, config['regression'])
+    drawer.draw_all(measurements)
 
     # Output
     drawer.save(args.output)
