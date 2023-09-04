@@ -7,6 +7,7 @@ INDICATOR_COLOR = (1, 0, 0)
 AXIS_COLOR = (0, 0, 0)
 INDICATOR_STROKE_WIDTH = 0.5
 AXIS_STROKE_WIDTH = 1.0
+REGRESSION_STROKE_WIDTH = 0.25
 
 
 class Drawer:
@@ -223,4 +224,4 @@ class Drawer:
         location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation('line', location,
                               Appearance(stroke_color=AXIS_COLOR,
-                                         stroke_width=AXIS_STROKE_WIDTH))
+                                         stroke_width=REGRESSION_STROKE_WIDTH))
