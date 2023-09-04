@@ -37,13 +37,18 @@ File paths are *relative* (see also `Sample usage` above).
 <details>
 <summary><b>CSV file</b></summary>
 
-The supplied CSV file should have 2 to 4 columns and it must *not* have a header row. Each row represents one data point. This is what the columns are for:
+The supplied CSV file must have 6 columns and it must *not* have a header row. Each row represents one data point. This is what the columns are for:
 
-| **Column 1** | **Column 2** | **Column 3**           | **Column 4** |
-| ---          | ---          | ---                    | ---          |
-| x-value      | y-value      | lower error of y-value* | upper error of y-value* |
+| Column | Content |
+| ------ | ------- |
+| 1 | x-value |
+| 2 | lower error of x-value |
+| 3 | upper error of x-value |
+| 4 | y-value |
+| 5 | lower error of y-value |
+| 6 | upper error of y-value |
 
-\*Note: If only three columns are supplied, the third column's content is interpreted as a *symmetrical* error of the y-value.
+If don't want your x- or y-values to have error bars, simply set the error to `0.0`. However, you still need to fill the corresponding column.
 
 See the [`data/data.csv`](./data/data.csv) file as an example.
 </details>

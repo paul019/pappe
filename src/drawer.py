@@ -46,8 +46,10 @@ class Drawer:
 
         for m in measurements:
             self._draw_datapoint(m)
-            if m.has_error_bounds():
-                self._draw_error_bar(m)
+            if m.x_error.exists():
+                self._draw_error_bar(m, Axis.HORIZONTAL)
+            if m.y_error.exists():
+                self._draw_error_bar(m, Axis.VERTICAL)
 
     def _draw_axes_numbers(self):
         for i in range(self.num_x_blocks + 1):
@@ -58,29 +60,50 @@ class Drawer:
             self._draw_vertical_axis_number(
                 i * self.num_y_tiny_blocks_per_block)
 
-    def _draw_error_bar(self, m: Measurement):
-        coords_top = self.trafo.get_pdf_coords_from_data_point(
-            m.x, m.y + m.upper_error)
-        coords_bottom = self.trafo.get_pdf_coords_from_data_point(
-            m.x, m.y - m.lower_error)
+    def _draw_error_bar(self, m: Measurement, axis: Axis):
+        # helping variable:
+        x = self.cross_size/2
 
-        # vertical line
-        location = Location(points=[coords_bottom, coords_top], page=0)
+        if axis == Axis.VERTICAL:
+            coords_start = self.trafo.get_pdf_coords_from_data_point(
+                m.x, m.y - m.y_error.lower_error)
+            coords_end = self.trafo.get_pdf_coords_from_data_point(
+                m.x, m.y + m.y_error.upper_error)
+            coords_start_tick = [
+                (coords_start[0] - x, coords_start[1]),
+                (coords_start[0] + x, coords_start[1])
+            ]
+            coords_end_tick = [
+                (coords_end[0] - x, coords_end[1]),
+                (coords_end[0] + x, coords_end[1])
+            ]
+        else:
+            coords_start = self.trafo.get_pdf_coords_from_data_point(
+                m.x - m.x_error.lower_error, m.y)
+            coords_end = self.trafo.get_pdf_coords_from_data_point(
+                m.x + m.x_error.upper_error, m.y)
+            coords_start_tick = [
+                (coords_start[0], coords_start[1] - x),
+                (coords_start[0], coords_start[1] + x)
+            ]
+            coords_end_tick = [
+                (coords_end[0], coords_end[1] - x),
+                (coords_end[0], coords_end[1] + x)
+            ]
+
+        # error line
+        location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation('line', location,
                               Appearance(stroke_color=INDICATOR_COLOR,
                                          stroke_width=INDICATOR_STROKE_WIDTH))
 
-        # lower line
-        points = [(coords_bottom[0]-self.cross_size/2, coords_bottom[1]),
-                  (coords_bottom[0]+self.cross_size/2, coords_bottom[1])]
-        self.a.add_annotation('line', Location(points=points, page=0),
+        # start tick
+        self.a.add_annotation('line', Location(points=coords_start_tick, page=0),
                               Appearance(stroke_color=INDICATOR_COLOR,
                                          stroke_width=INDICATOR_STROKE_WIDTH))
 
-        # upper line
-        points = [(coords_top[0]-self.cross_size/2, coords_top[1]),
-                  (coords_top[0]+self.cross_size/2, coords_top[1])]
-        self.a.add_annotation('line', Location(points=points, page=0),
+        # end tick
+        self.a.add_annotation('line', Location(points=coords_end_tick, page=0),
                               Appearance(stroke_color=INDICATOR_COLOR,
                                          stroke_width=INDICATOR_STROKE_WIDTH))
 
