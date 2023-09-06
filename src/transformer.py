@@ -78,8 +78,7 @@ class Transformer:
 
         print()
         print(f'SCALING')
-        x_equivalent = self.grid_config['num_x_tiny_blocks_per_block'] / factor_x
-        y_equivalent = self.grid_config['num_y_tiny_blocks_per_block'] / factor_y
+        x_equivalent, y_equivalent = 1 / scale_x, 1/scale_y
         print(f'1 tiny block equals {x_equivalent:.3f} x-units'
               + f' (factor chosen: {factor_x})')
         print(f'1 tiny block equals {y_equivalent:.3f} y-units' +
