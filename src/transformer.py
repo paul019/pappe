@@ -41,11 +41,11 @@ class Transformer:
 
         # Data points offset (depending on whether data origin should be shown)
         points_offset_x, points_offset_y = 0.0, 0.0
-        if not self.should_contain_origin_x and (min_x < 0 and max_x > 0):
+        if not self.should_contain_origin_x and (min_x <= 0 and max_x >= 0):
             self.should_contain_origin_x = True
         if not self.should_contain_origin_x:
             points_offset_x = self._calc_data_points_offset(min_x, max_x)
-        if not self.should_contain_origin_y and (min_y < 0 and max_y > 0):
+        if not self.should_contain_origin_y and (min_y <= 0 and max_y >= 0):
             self.should_contain_origin_x = True
         if not self.should_contain_origin_y and (min_y > 0 or max_y < 0):
             points_offset_y = self._calc_data_points_offset(min_y, max_y)
