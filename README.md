@@ -37,7 +37,7 @@ File paths are *relative* (see also `Sample usage` above).
 <details>
 <summary><b>CSV file</b></summary>
 
-The supplied CSV file must have 6 columns and it must *not* have a header row. Each row represents one data point. This is what the columns are for:
+The supplied CSV file must have 6 columns and it *may* contain a header row. Each row represents one data point. This is what the columns are for:
 
 | Column | Content |
 | ------ | ------- |

@@ -17,14 +17,22 @@ def parse_csv(path: str) -> list[Measurement]:
     f = open(path, "r")
     reader = csv.reader(f)
 
-    for row in reader:
-        x, x_lower_error, x_upper_error = float(row[0]), float(row[1]), float(row[2])
-        y, y_lower_error, y_upper_error = float(row[3]), float(row[4]), float(row[5])
-        m = Measurement(
-            x, x_lower_error, x_upper_error, y, y_lower_error, y_upper_error
-        )
+    i = 0
 
-        measurements.append(m)
+    for row in reader:
+        try: 
+            x, x_lower_error, x_upper_error = float(row[0]), float(row[1]), float(row[2])
+            y, y_lower_error, y_upper_error = float(row[3]), float(row[4]), float(row[5])
+            m = Measurement(
+                x, x_lower_error, x_upper_error, y, y_lower_error, y_upper_error
+            )
+
+            measurements.append(m)
+        except:
+            if i != 0:
+                raise Exception('Wrong input format.')
+
+        i += 1
 
     return measurements
 
