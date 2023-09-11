@@ -1,4 +1,8 @@
 class Error:
+    """
+    An error corresponding to one point of a data series.
+    """
+
     def __init__(self, lower_error: float, upper_error: float):
         self.lower_error: float = lower_error
         self.upper_error: float = upper_error
@@ -39,10 +43,5 @@ class Measurement:
     def error_bounds(self) -> tuple[float, float]:
         return (self.lower_error, self.upper_error)
 
-    # def has_error_bounds(self) -> bool:
-    #    return self.lower_error != 0.0 or self.upper_error != 0.0
-
     def __str__(self):
-        # errors_str = f' Errors: ({self.lower_error}, {self.upper_error})'\
-        #    if self.has_error_bounds() else ''
         return f"Point ({self.x}, {self.y})"
