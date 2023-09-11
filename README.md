@@ -48,7 +48,7 @@ The supplied CSV file must have 6 columns and it must *not* have a header row. E
 | 5 | lower error of y-value |
 | 6 | upper error of y-value |
 
-If don't want your x- or y-values to have error bars, simply set the error to `0.0`. However, you still need to fill the corresponding column.
+If you don't want your x- or y-values to have error bars, simply set the error to `0.0`. However, you still need to fill the corresponding columns.
 
 See the [`data/data.csv`](./data/data.csv) file as an example.
 </details>
