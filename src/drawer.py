@@ -19,8 +19,8 @@ class Drawer:
     measurements into PDF coordinates.
     """
 
-    def __init__(self, trafo: Transformer, config, regressionConfig) -> None:
-        self.regressionConfig = regressionConfig
+    def __init__(self, trafo: Transformer, config, regression_config) -> None:
+        self.regression_config = regression_config
 
         paper_config = config["paper"]
         grid_config = config["grid"]
@@ -52,13 +52,13 @@ class Drawer:
         self._draw_axes_numbers()
 
         # Regression
-        if self.regressionConfig["print_parameters"]:
+        if self.regression_config["print_parameters"]:
             self._print_regression()
-        if self.regressionConfig["draw_curve_of_best_fit"]:
+        if self.regression_config["draw_curve_of_best_fit"]:
             self._draw_curve_of_best_fit()
-        if self.regressionConfig["draw_error_curve_low_slope"]:
+        if self.regression_config["draw_error_curve_low_slope"]:
             self._draw_error_curve_low_slope()
-        if self.regressionConfig["draw_error_curve_high_slope"]:
+        if self.regression_config["draw_error_curve_high_slope"]:
             self._draw_error_curve_high_slope()
 
         # Draw measurements
