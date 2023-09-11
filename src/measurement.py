@@ -5,9 +5,10 @@ class Error:
 
     def exists(self):
         return self.lower_error != 0.0 or self.upper_error != 0.0
-    
+
     def avg_error(self):
         return (self.lower_error + self.upper_error) / 2.0
+
 
 class Measurement:
     """
@@ -18,7 +19,15 @@ class Measurement:
     and are not drawn.
     """
 
-    def __init__(self, x: float, x_lower_error: float, x_upper_error: float, y: float, y_lower_error: float, y_upper_error: float):
+    def __init__(
+        self,
+        x: float,
+        x_lower_error: float,
+        x_upper_error: float,
+        y: float,
+        y_lower_error: float,
+        y_upper_error: float,
+    ):
         self.x: float = x
         self.y: float = y
         self.x_error: Error = Error(x_lower_error, x_upper_error)
@@ -30,10 +39,10 @@ class Measurement:
     def error_bounds(self) -> tuple[float, float]:
         return (self.lower_error, self.upper_error)
 
-    #def has_error_bounds(self) -> bool:
+    # def has_error_bounds(self) -> bool:
     #    return self.lower_error != 0.0 or self.upper_error != 0.0
 
     def __str__(self):
-        #errors_str = f' Errors: ({self.lower_error}, {self.upper_error})'\
+        # errors_str = f' Errors: ({self.lower_error}, {self.upper_error})'\
         #    if self.has_error_bounds() else ''
-        return f'Point ({self.x}, {self.y})'
+        return f"Point ({self.x}, {self.y})"
