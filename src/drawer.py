@@ -84,9 +84,9 @@ class Drawer:
         x = self.cross_size/2
 
         if axis == Axis.VERTICAL:
-            coords_start = self.trafo.get_pdf_coords_from_data_point(
+            coords_start = self.trafo.get_pdf_coords_from_offset_data_point(
                 m.x, m.y - m.y_error.lower_error)
-            coords_end = self.trafo.get_pdf_coords_from_data_point(
+            coords_end = self.trafo.get_pdf_coords_from_offset_data_point(
                 m.x, m.y + m.y_error.upper_error)
             coords_start_tick = [
                 (coords_start[0] - x, coords_start[1]),
@@ -97,9 +97,9 @@ class Drawer:
                 (coords_end[0] + x, coords_end[1])
             ]
         else:
-            coords_start = self.trafo.get_pdf_coords_from_data_point(
+            coords_start = self.trafo.get_pdf_coords_from_offset_data_point(
                 m.x - m.x_error.lower_error, m.y)
-            coords_end = self.trafo.get_pdf_coords_from_data_point(
+            coords_end = self.trafo.get_pdf_coords_from_offset_data_point(
                 m.x + m.x_error.upper_error, m.y)
             coords_start_tick = [
                 (coords_start[0], coords_start[1] - x),
@@ -127,7 +127,7 @@ class Drawer:
                                          stroke_width=INDICATOR_STROKE_WIDTH))
 
     def _draw_datapoint(self, m: Measurement):
-        coords = self.trafo.get_pdf_coords_from_data_point(m.x, m.y)
+        coords = self.trafo.get_pdf_coords_from_offset_data_point(m.x, m.y)
 
         # One side of cross
         points = [(coords[0]-self.cross_size/2, coords[1]-self.cross_size/2),

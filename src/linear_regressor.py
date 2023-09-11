@@ -39,7 +39,6 @@ def do_linear_regression(measurements: list[Measurement]):
     """
     x = [m.x for m in measurements]
     y = [m.y for m in measurements]
-    dx = [m.x_error.avg_error() for m in measurements]
     dy = [m.y_error.avg_error() for m in measurements]
     num = len(measurements)
 

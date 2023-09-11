@@ -1,5 +1,6 @@
 import math
 from enum import Enum
+import copy
 
 from src.measurement import Measurement
 from src.linear_regressor import do_linear_regression
@@ -34,7 +35,7 @@ class Transformer:
             grid_config['num_y_tiny_blocks_per_block']
 
     def analyze_and_offset_measurements(self, measurements: list[Measurement]):
-        self.measurements = measurements
+        self.measurements = copy.deepcopy(measurements)
 
         # Min/Max values
         x_values = [m.x for m in measurements]
@@ -154,7 +155,7 @@ class Transformer:
 
         return scale_refined
 
-    def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
+    def get_pdf_coords_from_offset_data_point(self, x: float, y: float) -> tuple[float, float]:
         grid_x = (x*self.scale_x+self.offset_x) * \
             self.grid_config['width'] / \
             self.num_total_x_blocks + self.grid_config['x']
@@ -162,6 +163,9 @@ class Transformer:
             self.grid_config['height'] / \
             self.num_total_y_blocks + self.grid_config['y']
         return grid_x, grid_y
+    
+    def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
+        return self.get_pdf_coords_from_offset_data_point(x - self.points_offset_x, y - self.points_offset_y)
 
     def get_pdf_coords_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
         grid_x = x * self.grid_config['width'] / \
