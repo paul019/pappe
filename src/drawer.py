@@ -282,7 +282,7 @@ class Drawer:
         self, f: LinearFunction, color: tuple[float, float, float]
     ):
         """
-        Draw linear function of the form y = m * x + b.
+        Draws a linear function of the form y = m * x + b.
         """
 
         grid_start_x = self.trafo.get_data_point_from_grid_coords(0, 0)[0]
