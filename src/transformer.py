@@ -65,8 +65,8 @@ class Transformer:
             Axis.VERTICAL, min_y, max_y)
 
         # Refine scale
-        scale_x = self._refine_scale(scale_x, self.factors_x)
-        scale_y = self._refine_scale(scale_y, self.factors_y)
+        scale_x, factor_x = self._refine_scale(scale_x, self.factors_x)
+        scale_y, factor_y = self._refine_scale(scale_y, self.factors_y)
 
         # Make accessible as instance variables
         self.offset_x = offset_x
@@ -75,6 +75,15 @@ class Transformer:
         self.scale_y = scale_y
         self.points_offset_x = points_offset_x
         self.points_offset_y = points_offset_y
+
+        print()
+        print(f'SCALING')
+        x_equivalent, y_equivalent = 1 / scale_x, 1/scale_y
+        print(f'1 tiny block equals {x_equivalent:.3f} x-units'
+              + f' (factor chosen: {factor_x})')
+        print(f'1 tiny block equals {y_equivalent:.3f} y-units' +
+              f' (factor chosen: {factor_y})')
+        print()
 
         return measurements
 
@@ -140,16 +149,18 @@ class Transformer:
 
         return offset, scale
 
-    def _refine_scale(self, scale: float, factors: list[int]) -> float:
+    def _refine_scale(self, scale: float, factors: list[int]) -> tuple[float, int]:
         scale_rounded_down = pow(10, math.floor(math.log10(scale)))
         scale_refined = scale_rounded_down
 
         ratio = scale / scale_rounded_down
+        factor_chosen = 1
         for factor in factors:
             if factor <= ratio:
                 scale_refined = scale_rounded_down * factor
+                factor_chosen = factor
 
-        return scale_refined
+        return scale_refined, factor_chosen
 
     def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
         grid_x = (x*self.scale_x+self.offset_x) * \

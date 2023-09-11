@@ -6,13 +6,15 @@ from src.transformer import Transformer
 
 
 def main():
+    print('🙌 pappe started')
+
     # Parse CLI arguments
     cli_parser = argparse.ArgumentParser(
         prog='pappe',
         description='A CLI to draw your data on top of millimeter paper.',
         add_help=True)
     cli_parser.add_argument('input', help='path to input CSV file')
-    cli_parser.add_argument('output', help='path to output pdf')
+    cli_parser.add_argument('output', help='path to output PDF')
     cli_parser.add_argument('-c', '--config',
                             help='path to TOML config file',
                             default='config.toml')
@@ -35,6 +37,7 @@ def main():
 
     # Output
     drawer.save(args.output)
+    print(f'Successfully saved PDF to {args.output}')
 
 
 if __name__ == '__main__':
