@@ -40,10 +40,14 @@ def do_linear_regression(measurements: list[Measurement]):
     """
     Makes a linear regression.
     """
-    x = [m.x for m in measurements]
-    y = [m.y for m in measurements]
-    dy = [m.y_error.avg_error() for m in measurements]
-    num = len(measurements)
+    effective_measurements = list(
+        filter(lambda m: not m.hide_for_regression, measurements)
+    )
+
+    x = [m.x for m in effective_measurements]
+    y = [m.y for m in effective_measurements]
+    dy = [m.y_error.avg_error() for m in effective_measurements]
+    num = len(effective_measurements)
 
     # sum(1/dy^2)
     a = 0.0

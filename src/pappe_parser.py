@@ -20,17 +20,35 @@ def parse_csv(path: str) -> list[Measurement]:
     i = 0
 
     for row in reader:
-        try: 
-            x, x_lower_error, x_upper_error = float(row[0]), float(row[1]), float(row[2])
-            y, y_lower_error, y_upper_error = float(row[3]), float(row[4]), float(row[5])
+        try:
+            x, x_lower_error, x_upper_error = (
+                float(row[0]),
+                float(row[1]),
+                float(row[2]),
+            )
+            y, y_lower_error, y_upper_error = (
+                float(row[3]),
+                float(row[4]),
+                float(row[5]),
+            )
+            try:
+                hide_for_regression = row[6] == "hide"
+            except:
+                hide_for_regression = False
             m = Measurement(
-                x, x_lower_error, x_upper_error, y, y_lower_error, y_upper_error
+                x,
+                x_lower_error,
+                x_upper_error,
+                y,
+                y_lower_error,
+                y_upper_error,
+                hide_for_regression,
             )
 
             measurements.append(m)
         except:
             if i != 0:
-                raise Exception('Wrong input format.')
+                raise Exception("Wrong input format.")
 
         i += 1
 

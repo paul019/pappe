@@ -30,11 +30,13 @@ class Measurement:
         y: float,
         y_lower_error: float,
         y_upper_error: float,
+        hide_for_regression: bool,
     ):
         self.x: float = x
         self.y: float = y
         self.x_error: Error = Error(x_lower_error, x_upper_error)
         self.y_error: Error = Error(y_lower_error, y_upper_error)
+        self.hide_for_regression = hide_for_regression
 
     def data(self) -> tuple[float, float]:
         return (self.x, self.y)

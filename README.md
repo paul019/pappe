@@ -37,7 +37,7 @@ File paths are *relative* (see also `Sample usage` above).
 <details>
 <summary><b>CSV file</b></summary>
 
-The supplied CSV file must have 6 columns and it *may* contain a header row. Each row represents one data point. This is what the columns are for:
+The supplied CSV file must have 6 or 7 columns and it *may* contain a header row. Each row represents one data point. This is what the columns are for:
 
 | Column | Content |
 | ------ | ------- |
@@ -47,6 +47,7 @@ The supplied CSV file must have 6 columns and it *may* contain a header row. Eac
 | 4 | y-value |
 | 5 | lower error of y-value |
 | 6 | upper error of y-value |
+| 7 (optional) | Put `hide` here to hide this datapoint from the linear regressor. This can be used to handle outliers. |
 
 If you don't want your x- or y-values to have error bars, simply set the error to `0.0`. However, you still need to fill the corresponding columns.
 
