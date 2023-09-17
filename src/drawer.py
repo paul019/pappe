@@ -42,9 +42,18 @@ class Drawer:
     def save(self, path: str):
         self.a.write(path)
 
+    def should_do_regression(self):
+        return (
+            self.regression_config["print_parameters"]
+            or self.regression_config["draw_curve_of_best_fit"]
+            or self.regression_config["draw_error_curve_low_slope"]
+            or self.regression_config["draw_error_curve_high_slope"]
+        )
+
     def draw_all(self, measurements: list[Measurement]):
         measurements = self.trafo.analyze_and_offset_measurements(measurements)
-        self.regression = self.trafo.get_linear_regression()
+        if self.should_do_regression():
+            self.regression = self.trafo.get_linear_regression()
 
         # Draw axes
         self._draw_axis(Axis.HORIZONTAL)
