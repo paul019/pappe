@@ -202,19 +202,26 @@ class Transformer:
 
         return self.get_pdf_coords_from_grid_coords(x, y)
 
-    def get_data_point_from_grid_coords(
+    def get_offset_data_point_from_grid_coords(
         self, x: float, y: float
     ) -> tuple[float, float]:
         return ((x - self.offset_x) / self.scale_x, (y - self.offset_y) / self.scale_y)
 
+    def get_data_point_from_grid_coords(
+        self, x: float, y: float
+    ) -> tuple[float, float]:
+        with_offset = self.get_offset_data_point_from_grid_coords(x, y)
+        return (
+            with_offset[0] + self.points_offset_x,
+            with_offset[1] + self.points_offset_y,
+        )
+
     def grid_coord_to_data_label(self, grid_coord: int, axis: Axis) -> float:
         if axis == Axis.HORIZONTAL:
             label = self.get_data_point_from_grid_coords(grid_coord, 0)[0]
-            label += self.points_offset_x
             return label
         else:
             label = self.get_data_point_from_grid_coords(0, grid_coord)[1]
-            label += self.points_offset_y
             return label
 
     def get_linear_regression(self):
