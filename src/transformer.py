@@ -26,6 +26,9 @@ class Transformer:
         self.factors_x.sort()
         self.factors_y.sort()
 
+        self.offset_exponent_x = factors_config["offset_exponent_x"]
+        self.offset_exponent_y = factors_config["offset_exponent_y"]
+
         self.should_contain_origin_x = origins_config["x"]
         self.should_contain_origin_y = origins_config["y"]
 
@@ -50,11 +53,11 @@ class Transformer:
         if not self.should_contain_origin_x and (min_x <= 0 and max_x >= 0):
             self.should_contain_origin_x = True
         if not self.should_contain_origin_x:
-            points_offset_x = self._calc_data_points_offset(min_x, max_x)
+            points_offset_x = self._calc_data_points_offset(min_x, max_x, self.offset_exponent_x)
         if not self.should_contain_origin_y and (min_y <= 0 and max_y >= 0):
             self.should_contain_origin_x = True
         if not self.should_contain_origin_y and (min_y > 0 or max_y < 0):
-            points_offset_y = self._calc_data_points_offset(min_y, max_y)
+            points_offset_y = self._calc_data_points_offset(min_y, max_y, self.offset_exponent_y)
         # Apply offsets
         for m in measurements:
             m.x -= points_offset_x
@@ -86,7 +89,7 @@ class Transformer:
 
         return measurements
 
-    def _calc_data_points_offset(self, min_value: float, max_value: float) -> float:
+    def _calc_data_points_offset(self, min_value: float, max_value: float, offset_exponent: int) -> float:
         """
         Calculates the offset of data points inside their own reference system.
 
@@ -95,20 +98,20 @@ class Transformer:
         # TODO: Refactoring by Paul ;)
 
         if min_value <= 0:
-            points_offset = -pow(10, math.floor(math.log10(-max_value)))
+            points_offset = -pow(10, math.floor(math.log10(-max_value))) / pow(10, offset_exponent)
             points_offset_trial = points_offset
 
-            for i in range(2, 10):
+            for i in range(2, pow(10, offset_exponent+1)):
                 if i * points_offset >= max_value:
                     points_offset_trial = i * points_offset
 
             points_offset = points_offset_trial
 
         else:
-            points_offset = pow(10, math.floor(math.log10(min_value)))
+            points_offset = pow(10, math.floor(math.log10(min_value))) / pow(10, offset_exponent)
             points_offset_trial = points_offset
 
-            for i in range(2, 10):
+            for i in range(2, pow(10, offset_exponent+1)):
                 if i * points_offset <= min_value:
                     points_offset_trial = i * points_offset
 
