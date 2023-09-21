@@ -26,25 +26,23 @@ class Drawer:
 
     def __init__(
         self,
-        paper_config,
         grid_config,
-        drawing_config,
         x_axis_config,
         y_axis_config,
         regression_config,
     ) -> None:
         self.regression_config = regression_config
 
-        self.a = PdfAnnotator(paper_config["file"])
-        self.a.set_page_dimensions((paper_config["width"], paper_config["height"]), 0)
+        self.a = PdfAnnotator(grid_config["paper"]["file"])
+        self.a.set_page_dimensions((grid_config["paper"]["width"], grid_config["paper"]["height"]), 0)
 
-        if x_axis_config["type"] == "linear":
+        if grid_config["x_axis"]["type"] == "linear":
             self.trafo_maker_x = LinearAxisTranformerMaker(
                 AxisDirection.HORIZONTAL,
-                grid_config["num_x_blocks"],
-                grid_config["num_x_tiny_blocks_per_block"],
-                grid_config["width"],
-                grid_config["x"],
+                grid_config["x_axis"]["num_blocks"],
+                grid_config["x_axis"]["num_tiny_blocks_per_block"],
+                grid_config["grid"]["width"],
+                grid_config["grid"]["x"],
                 x_axis_config["factors"],
                 x_axis_config["offset_exponent"],
                 x_axis_config["show_origin"],
@@ -52,13 +50,13 @@ class Drawer:
         else:
             raise NotImplementedError
         
-        if y_axis_config["type"] == "linear":
+        if grid_config["y_axis"]["type"] == "linear":
             self.trafo_maker_y = LinearAxisTranformerMaker(
                 AxisDirection.VERTICAL,
-                grid_config["num_y_blocks"],
-                grid_config["num_y_tiny_blocks_per_block"],
-                grid_config["height"],
-                grid_config["y"],
+                grid_config["y_axis"]["num_blocks"],
+                grid_config["y_axis"]["num_tiny_blocks_per_block"],
+                grid_config["grid"]["height"],
+                grid_config["grid"]["y"],
                 y_axis_config["factors"],
                 y_axis_config["offset_exponent"],
                 y_axis_config["show_origin"],
@@ -66,8 +64,8 @@ class Drawer:
         else:
             raise NotImplementedError
 
-        self.cross_size = drawing_config["cross_size"]
-        self.axis_tick_size = drawing_config["axis_tick_size"]
+        self.cross_size = grid_config["drawing"]["cross_size"]
+        self.axis_tick_size = grid_config["drawing"]["axis_tick_size"]
 
     def save(self, path: str):
         self.a.write(path)
@@ -111,11 +109,11 @@ class Drawer:
                 self._draw_error_bar(m, AxisDirection.VERTICAL)
 
     def _draw_axes_numbers(self):
-        for i in range(self.trafo_x.num_blocks + 1):
-            self._draw_horizontal_axis_number(i * self.trafo_x.num_tiny_blocks_per_block)
+        for c in self.trafo_x.get_axes_number_data_coords():
+            self._draw_horizontal_axis_number(c)
 
-        for i in range(self.trafo_y.num_blocks + 1):
-            self._draw_vertical_axis_number(i * self.trafo_y.num_tiny_blocks_per_block)
+        for c in self.trafo_y.get_axes_number_data_coords():
+            self._draw_vertical_axis_number(c)
 
     def _draw_error_bar(self, m: Measurement, axis: AxisDirection):
         # helping variable:
@@ -216,13 +214,12 @@ class Drawer:
             ),
         )
 
-    def _draw_vertical_axis_number(self, num_grid):
-        num_data = self.trafo_y.get_data_coord_from_grid_coord(num_grid)
-        label = f"{num_data:.3e}"
+    def _draw_vertical_axis_number(self, data_coord):
+        label = f"{data_coord:.3e}"
 
         coords = (
             self.trafo_x.get_pdf_coord_of_axis(),
-            self.trafo_y.get_pdf_coord_from_grid_coord(num_grid),
+            self.trafo_y.get_pdf_coord_from_data_coord(data_coord),
         )
 
         # Line
@@ -252,12 +249,11 @@ class Drawer:
             ),
         )
 
-    def _draw_horizontal_axis_number(self, num_grid):
-        num_data = self.trafo_x.get_data_coord_from_grid_coord(num_grid)
-        label = f"{num_data:.3e}"
+    def _draw_horizontal_axis_number(self, data_coord):
+        label = f"{data_coord:.3e}"
 
         coords = (
-            self.trafo_x.get_pdf_coord_from_grid_coord(num_grid),
+            self.trafo_x.get_pdf_coord_from_data_coord(data_coord),
             self.trafo_y.get_pdf_coord_of_axis(),
         )
 

@@ -21,14 +21,16 @@ class LinearAxisTranformerMaker(AxisTransformerMaker):
         AxisTransformerMaker.__init__(
             self,
             axisDirection,
-            num_blocks,
-            num_tiny_blocks_per_block,
             grid_size,
             grid_start,
         )
 
         self.factors = factors
         self.factors.sort()
+
+        self.num_blocks = num_blocks
+        self.num_tiny_blocks_per_block = num_tiny_blocks_per_block
+        self.num_total_blocks = num_blocks * num_tiny_blocks_per_block
 
         self.offset_exponent = offset_exponent
         self.should_contain_origin = should_contain_origin

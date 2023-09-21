@@ -26,11 +26,7 @@ def main():
     config = parse_config(args.config)
     grid_no: int = config["grid_variant"]
     config_path_grid = f"grids/grid{grid_no}.toml"
-    complete_grid_config = parse_config(config_path_grid)
-
-    paper_config = complete_grid_config["paper"]
-    grid_config = complete_grid_config["grid"]
-    drawing_config = complete_grid_config["drawing"]
+    grid_config = parse_config(config_path_grid)
 
     regression_config = config["linear_regression"]
     x_axis_config = config["x_axis"]
@@ -40,9 +36,7 @@ def main():
     measurements = parse_csv(args.input)
 
     drawer = Drawer(
-        paper_config,
         grid_config,
-        drawing_config,
         x_axis_config,
         y_axis_config,
         regression_config,
