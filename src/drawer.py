@@ -1,8 +1,13 @@
 from pdf_annotate import PdfAnnotator, Location, Appearance
 
 from src.measurement import Measurement
-from src.transformer import Axis, Transformer
 from src.linear_regressor import LinearFunction
+from src.axis_transformer.axis_transformer import AxisTransformer
+from src.models.axis_direction import AxisDirection
+from src.axis_transformer_maker.linear_axis_transformer_maker import (
+    LinearAxisTranformerMaker,
+)
+from src.linear_regressor import do_linear_regression
 
 INDICATOR_COLOR = (0, 0, 1)
 AXIS_COLOR = (0, 0, 0)
@@ -19,25 +24,50 @@ class Drawer:
     measurements into PDF coordinates.
     """
 
-    def __init__(self, trafo: Transformer, config, regression_config) -> None:
+    def __init__(
+        self,
+        paper_config,
+        grid_config,
+        drawing_config,
+        x_axis_config,
+        y_axis_config,
+        regression_config,
+    ) -> None:
         self.regression_config = regression_config
-
-        paper_config = config["paper"]
-        grid_config = config["grid"]
-        drawing_config = config["drawing"]
 
         self.a = PdfAnnotator(paper_config["file"])
         self.a.set_page_dimensions((paper_config["width"], paper_config["height"]), 0)
 
-        self.trafo = trafo
+        if x_axis_config["type"] == "linear":
+            self.trafo_maker_x = LinearAxisTranformerMaker(
+                AxisDirection.HORIZONTAL,
+                grid_config["num_x_blocks"],
+                grid_config["num_x_tiny_blocks_per_block"],
+                grid_config["width"],
+                grid_config["x"],
+                x_axis_config["factors"],
+                x_axis_config["offset_exponent"],
+                x_axis_config["show_origin"],
+            )
+        else:
+            raise NotImplementedError
+        
+        if y_axis_config["type"] == "linear":
+            self.trafo_maker_y = LinearAxisTranformerMaker(
+                AxisDirection.VERTICAL,
+                grid_config["num_y_blocks"],
+                grid_config["num_y_tiny_blocks_per_block"],
+                grid_config["height"],
+                grid_config["y"],
+                y_axis_config["factors"],
+                y_axis_config["offset_exponent"],
+                y_axis_config["show_origin"],
+            )
+        else:
+            raise NotImplementedError
 
         self.cross_size = drawing_config["cross_size"]
         self.axis_tick_size = drawing_config["axis_tick_size"]
-
-        self.num_x_blocks = grid_config["num_x_blocks"]
-        self.num_y_blocks = grid_config["num_y_blocks"]
-        self.num_x_tiny_blocks_per_block = grid_config["num_x_tiny_blocks_per_block"]
-        self.num_y_tiny_blocks_per_block = grid_config["num_y_tiny_blocks_per_block"]
 
     def save(self, path: str):
         self.a.write(path)
@@ -51,13 +81,15 @@ class Drawer:
         )
 
     def draw_all(self, measurements: list[Measurement]):
-        measurements = self.trafo.analyze_and_offset_measurements(measurements)
+        self.trafo_x = self.trafo_maker_x.make([m.x for m in measurements])
+        self.trafo_y = self.trafo_maker_y.make([m.y for m in measurements])
+
         if self.should_do_regression():
-            self.regression = self.trafo.get_linear_regression()
+            self.regression = do_linear_regression(measurements)
 
         # Draw axes
-        self._draw_axis(Axis.HORIZONTAL)
-        self._draw_axis(Axis.VERTICAL)
+        self._draw_axis(AxisDirection.HORIZONTAL)
+        self._draw_axis(AxisDirection.VERTICAL)
         self._draw_axes_numbers()
 
         # Regression
@@ -74,27 +106,29 @@ class Drawer:
         for m in measurements:
             self._draw_datapoint(m)
             if m.x_error.exists():
-                self._draw_error_bar(m, Axis.HORIZONTAL)
+                self._draw_error_bar(m, AxisDirection.HORIZONTAL)
             if m.y_error.exists():
-                self._draw_error_bar(m, Axis.VERTICAL)
+                self._draw_error_bar(m, AxisDirection.VERTICAL)
 
     def _draw_axes_numbers(self):
-        for i in range(self.num_x_blocks + 1):
-            self._draw_horizontal_axis_number(i * self.num_x_tiny_blocks_per_block)
+        for i in range(self.trafo_x.num_blocks + 1):
+            self._draw_horizontal_axis_number(i * self.trafo_x.num_tiny_blocks_per_block)
 
-        for i in range(self.num_y_blocks + 1):
-            self._draw_vertical_axis_number(i * self.num_y_tiny_blocks_per_block)
+        for i in range(self.trafo_y.num_blocks + 1):
+            self._draw_vertical_axis_number(i * self.trafo_y.num_tiny_blocks_per_block)
 
-    def _draw_error_bar(self, m: Measurement, axis: Axis):
+    def _draw_error_bar(self, m: Measurement, axis: AxisDirection):
         # helping variable:
         x = self.cross_size / 2
 
-        if axis == Axis.VERTICAL:
-            coords_start = self.trafo.get_pdf_coords_from_offset_data_point(
-                m.x, m.y - m.y_error.lower_error
+        if axis == AxisDirection.VERTICAL:
+            coords_start = (
+                self.trafo_x.get_pdf_coord_from_data_coord(m.x),
+                self.trafo_y.get_pdf_coord_from_data_coord(m.y - m.y_error.lower_error),
             )
-            coords_end = self.trafo.get_pdf_coords_from_offset_data_point(
-                m.x, m.y + m.y_error.upper_error
+            coords_end = (
+                self.trafo_x.get_pdf_coord_from_data_coord(m.x),
+                self.trafo_y.get_pdf_coord_from_data_coord(m.y + m.y_error.upper_error),
             )
             coords_start_tick = [
                 (coords_start[0] - x, coords_start[1]),
@@ -105,11 +139,13 @@ class Drawer:
                 (coords_end[0] + x, coords_end[1]),
             ]
         else:
-            coords_start = self.trafo.get_pdf_coords_from_offset_data_point(
-                m.x - m.x_error.lower_error, m.y
+            coords_start = (
+                self.trafo_x.get_pdf_coord_from_data_coord(m.x - m.x_error.lower_error),
+                self.trafo_y.get_pdf_coord_from_data_coord(m.y),
             )
-            coords_end = self.trafo.get_pdf_coords_from_offset_data_point(
-                m.x + m.x_error.upper_error, m.y
+            coords_end = (
+                self.trafo_x.get_pdf_coord_from_data_coord(m.x + m.x_error.upper_error),
+                self.trafo_y.get_pdf_coord_from_data_coord(m.y),
             )
             coords_start_tick = [
                 (coords_start[0], coords_start[1] - x),
@@ -149,7 +185,10 @@ class Drawer:
         )
 
     def _draw_datapoint(self, m: Measurement):
-        coords = self.trafo.get_pdf_coords_from_offset_data_point(m.x, m.y)
+        coords = (
+            self.trafo_x.get_pdf_coord_from_data_coord(m.x),
+            self.trafo_y.get_pdf_coord_from_data_coord(m.y),
+        )
 
         # One side of cross
         points = [
@@ -178,10 +217,13 @@ class Drawer:
         )
 
     def _draw_vertical_axis_number(self, num_grid):
-        num_data = self.trafo.grid_coord_to_data_label(num_grid, Axis.VERTICAL)
+        num_data = self.trafo_y.get_data_coord_from_grid_coord(num_grid)
         label = f"{num_data:.3e}"
 
-        coords = self.trafo.get_pdf_coords_for_point_on_axis(Axis.VERTICAL, num_grid)
+        coords = (
+            self.trafo_x.get_pdf_coord_of_axis(),
+            self.trafo_y.get_pdf_coord_from_grid_coord(num_grid),
+        )
 
         # Line
         points = [
@@ -211,10 +253,13 @@ class Drawer:
         )
 
     def _draw_horizontal_axis_number(self, num_grid):
-        num_data = self.trafo.grid_coord_to_data_label(num_grid, Axis.HORIZONTAL)
+        num_data = self.trafo_x.get_data_coord_from_grid_coord(num_grid)
         label = f"{num_data:.3e}"
 
-        coords = self.trafo.get_pdf_coords_for_point_on_axis(Axis.HORIZONTAL, num_grid)
+        coords = (
+            self.trafo_x.get_pdf_coord_from_grid_coord(num_grid),
+            self.trafo_y.get_pdf_coord_of_axis(),
+        )
 
         # Line
         points = [
@@ -243,14 +288,29 @@ class Drawer:
             ),
         )
 
-    def _draw_axis(self, axis: Axis):
-        if axis == Axis.HORIZONTAL:
-            num_blocks = self.num_x_blocks * self.num_x_tiny_blocks_per_block
+    def _draw_axis(self, axis: AxisDirection):
+        if axis == AxisDirection.HORIZONTAL:
+            coords_start = (
+                self.trafo_x.get_pdf_coord_from_grid_coord(0),
+                self.trafo_y.get_pdf_coord_of_axis(),
+            )
+            coords_end = (
+                self.trafo_x.get_pdf_coord_from_grid_coord(
+                    self.trafo_x.num_total_blocks
+                ),
+                self.trafo_y.get_pdf_coord_of_axis(),
+            )
         else:
-            num_blocks = self.num_y_blocks * self.num_y_tiny_blocks_per_block
-
-        coords_start = self.trafo.get_pdf_coords_for_point_on_axis(axis, 0)
-        coords_end = self.trafo.get_pdf_coords_for_point_on_axis(axis, num_blocks)
+            coords_start = (
+                self.trafo_x.get_pdf_coord_of_axis(),
+                self.trafo_y.get_pdf_coord_from_grid_coord(0),
+            )
+            coords_end = (
+                self.trafo_x.get_pdf_coord_of_axis(),
+                self.trafo_y.get_pdf_coord_from_grid_coord(
+                    self.trafo_y.num_total_blocks
+                ),
+            )
 
         location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation(
@@ -294,27 +354,23 @@ class Drawer:
         Draws a linear function of the form y = m * x + b.
         """
 
-        grid_start_x = self.trafo.get_data_point_from_grid_coords(0, 0)[0]
-        grid_end_x = self.trafo.get_data_point_from_grid_coords(
-            self.num_x_blocks * self.num_x_tiny_blocks_per_block, 0
-        )[0]
+        grid_start_x = self.trafo_x.get_data_coord_from_grid_coord(0)
+        grid_end_x = self.trafo_x.get_data_coord_from_grid_coord(
+            self.trafo_x.num_total_blocks
+        )
 
         start_y = f.eval(grid_start_x)
         end_y = f.eval(grid_end_x)
 
-        coords_start = [
-            self.trafo.get_pdf_coords_from_grid_coords(0, 0)[0],
-            self.trafo.get_pdf_coords_from_data_point(0, start_y)[1],
-        ]
+        coords_start = (
+            self.trafo_x.get_pdf_coord_from_grid_coord(0),
+            self.trafo_y.get_pdf_coord_from_data_coord(start_y),
+        )
 
-        coords_end = [
-            self.trafo.get_pdf_coords_from_grid_coords(
-                self.num_x_blocks * self.num_x_tiny_blocks_per_block, 0
-            )[0],
-            self.trafo.get_pdf_coords_from_data_point(
-                self.num_x_blocks * self.num_x_tiny_blocks_per_block, end_y
-            )[1],
-        ]
+        coords_end = (
+            self.trafo_x.get_pdf_coord_from_grid_coord(self.trafo_x.num_total_blocks),
+            self.trafo_y.get_pdf_coord_from_data_coord(end_y),
+        )
 
         location = Location(points=[coords_start, coords_end], page=0)
         self.a.add_annotation(

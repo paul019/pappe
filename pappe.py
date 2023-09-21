@@ -2,8 +2,10 @@ import argparse
 
 from src.pappe_parser import parse_csv, parse_config
 from src.drawer import Drawer
-from src.transformer import Transformer
-from src.linear_regressor import do_linear_regression
+from src.axis_transformer_maker.linear_axis_transformer_maker import (
+    LinearAxisTranformerMaker,
+)
+from src.models.axis_direction import AxisDirection
 
 
 def main():
@@ -26,14 +28,25 @@ def main():
     config_path_grid = f"grids/grid{grid_no}.toml"
     complete_grid_config = parse_config(config_path_grid)
 
+    paper_config = complete_grid_config["paper"]
+    grid_config = complete_grid_config["grid"]
+    drawing_config = complete_grid_config["drawing"]
+
+    regression_config = config["linear_regression"]
+    x_axis_config = config["x_axis"]
+    y_axis_config = config["y_axis"]
+
     # Parse input CSV
     measurements = parse_csv(args.input)
 
-    # Setup drawing
-    trafo = Transformer(
-        complete_grid_config["grid"], config["factors"], config["origins"]
+    drawer = Drawer(
+        paper_config,
+        grid_config,
+        drawing_config,
+        x_axis_config,
+        y_axis_config,
+        regression_config,
     )
-    drawer = Drawer(trafo, complete_grid_config, config["linear_regression"])
     drawer.draw_all(measurements)
 
     # Output
