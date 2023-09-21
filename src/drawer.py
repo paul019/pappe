@@ -234,7 +234,7 @@ class Drawer:
         )
 
     def _draw_vertical_axis_number(self, data_coord):
-        label = f"{data_coord:.3e}"
+        label = f"{data_coord:.2e}"
 
         coords = (
             self.trafo_x.get_pdf_coord_of_axis(),
@@ -269,7 +269,7 @@ class Drawer:
         )
 
     def _draw_horizontal_axis_number(self, data_coord):
-        label = f"{data_coord:.3e}"
+        label = f"{data_coord:.2e}"
 
         coords = (
             self.trafo_x.get_pdf_coord_from_data_coord(data_coord),

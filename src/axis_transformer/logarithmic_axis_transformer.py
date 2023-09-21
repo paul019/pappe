@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 from src.models.axis_direction import AxisDirection
 from src.axis_transformer.axis_transformer import AxisTransformer
@@ -27,7 +28,7 @@ class LogarithmicAxisTransformer(AxisTransformer):
         return (np.log10(data_coord) - self.log_offset) / self.num_decades
 
     def get_data_coord_from_grid_coord(self, grid_coord: float) -> float:
-        return np.pow(10, grid_coord * self.num_decades + self.log_offset)
+        return math.pow(10, grid_coord * self.num_decades + self.log_offset)
 
     def get_pdf_coord_of_axis(self) -> float:
         return self.get_pdf_coord_from_grid_coord(0)
@@ -47,12 +48,15 @@ class LogarithmicAxisTransformer(AxisTransformer):
         return self.get_data_coord_from_grid_coord(
             self.get_grid_coord_from_pdf_coord(pdf_coord)
         )
-    
+
     def get_min_pdf_coord(self) -> float:
         return self.get_pdf_coord_from_grid_coord(0)
-    
+
     def get_max_pdf_coord(self) -> float:
         return self.get_pdf_coord_from_grid_coord(1)
 
     def get_axis_numbers_data_coords(self) -> list[float]:
-        return []
+        return [
+            math.pow(10, self.log_offset + m)
+            for m in range(self.num_decades + 1)
+        ]
