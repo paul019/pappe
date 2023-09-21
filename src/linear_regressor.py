@@ -1,5 +1,5 @@
 import math
-from src.measurement import Measurement
+from src.models.measurement import Measurement
 
 
 class LinearRegression:

@@ -1,6 +1,6 @@
 from pdf_annotate import PdfAnnotator, Location, Appearance
 
-from src.measurement import Measurement
+from src.models.measurement import Measurement
 from src.linear_regressor import LinearFunction
 from src.axis_transformer.axis_transformer import AxisTransformer
 from src.models.axis_direction import AxisDirection
