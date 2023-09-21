@@ -20,6 +20,8 @@ INDICATOR_STROKE_WIDTH = 0.5
 AXIS_STROKE_WIDTH = 1.0
 REGRESSION_STROKE_WIDTH = 0.25
 
+COLORS = ((0, 0, 1), (0, 1, 0), (1, 0, 0))
+
 
 class Drawer:
     """
@@ -97,9 +99,11 @@ class Drawer:
             or self.regression_config["draw_error_curve_high_slope"]
         )
 
-    def draw_all(self, measurements: list[Measurement]):
+    def draw_all(self, measurements: list[Measurement], color: tuple[float, float, float]):
         self.trafo_x = self.trafo_maker_x.make([m.x for m in measurements])
         self.trafo_y = self.trafo_maker_y.make([m.y for m in measurements])
+
+        self.color = color
 
         if self.should_do_regression():
             self.regression = do_linear_regression(measurements)
@@ -179,7 +183,7 @@ class Drawer:
             "line",
             location,
             Appearance(
-                stroke_color=INDICATOR_COLOR, stroke_width=INDICATOR_STROKE_WIDTH
+                stroke_color=self.color, stroke_width=INDICATOR_STROKE_WIDTH
             ),
         )
 
@@ -188,7 +192,7 @@ class Drawer:
             "line",
             Location(points=coords_start_tick, page=0),
             Appearance(
-                stroke_color=INDICATOR_COLOR, stroke_width=INDICATOR_STROKE_WIDTH
+                stroke_color=self.color, stroke_width=INDICATOR_STROKE_WIDTH
             ),
         )
 
@@ -197,7 +201,7 @@ class Drawer:
             "line",
             Location(points=coords_end_tick, page=0),
             Appearance(
-                stroke_color=INDICATOR_COLOR, stroke_width=INDICATOR_STROKE_WIDTH
+                stroke_color=self.color, stroke_width=INDICATOR_STROKE_WIDTH
             ),
         )
 
@@ -216,7 +220,7 @@ class Drawer:
             "line",
             Location(points=points, page=0),
             Appearance(
-                stroke_color=INDICATOR_COLOR, stroke_width=INDICATOR_STROKE_WIDTH
+                stroke_color=self.color, stroke_width=INDICATOR_STROKE_WIDTH
             ),
         )
 
@@ -229,7 +233,7 @@ class Drawer:
             "line",
             Location(points=points, page=0),
             Appearance(
-                stroke_color=INDICATOR_COLOR, stroke_width=INDICATOR_STROKE_WIDTH
+                stroke_color=self.color, stroke_width=INDICATOR_STROKE_WIDTH
             ),
         )
 
@@ -261,7 +265,7 @@ class Drawer:
             location,
             Appearance(
                 content=label,
-                fill=[0, 0, 0],
+                fill=self.color,
                 stroke_width=1,
                 font_size=40,
                 text_align="right",
@@ -296,7 +300,7 @@ class Drawer:
             location,
             Appearance(
                 content=label,
-                fill=[0, 0, 0],
+                fill=self.color,
                 stroke_width=1,
                 font_size=40,
                 text_align="center",
@@ -348,7 +352,7 @@ class Drawer:
         print()
 
     def _draw_curve_of_best_fit(self):
-        self._draw_linear_function(self.regression.best_fit(), LINE_OF_BEST_FIT_COLOR)
+        self._draw_linear_function(self.regression.best_fit(), self.color)
 
     def _draw_error_curve_low_slope(self):
         self._draw_linear_function(self.regression.error_curve_low_slope(), ERROR_COLOR)

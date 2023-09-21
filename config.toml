@@ -1,5 +1,8 @@
 grid_variant = 3
 
+[data]
+files = ['data/data.csv', 'data/data2.csv']
+
 [x_axis]
 type = "linear"
 factors = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
