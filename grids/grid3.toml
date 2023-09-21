@@ -1,0 +1,23 @@
+[paper]
+file = 'grids/grid3.pdf'
+width = 4133
+height = 5846
+
+[grid]
+width = 3544
+height = 5160
+x = 333
+y = 343
+
+[x_axis]
+type = "linear"
+num_blocks = 18
+num_tiny_blocks_per_block = 10
+
+[y_axis]
+type = "logarithmic"
+num_decades = 3
+
+[drawing]
+cross_size = 10
+axis_tick_size = 20

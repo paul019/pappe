@@ -59,8 +59,14 @@ class LinearAxisTransformer(AxisTransformer):
             self.get_grid_coord_from_pdf_coord(pdf_coord)
         )
 
-    def get_axes_number_data_coords(self) -> list[float]:
+    def get_axis_numbers_data_coords(self) -> list[float]:
         return [
             self.get_data_coord_from_grid_coord(m * self.num_tiny_blocks_per_block)
             for m in range(self.num_blocks + 1)
         ]
+    
+    def get_min_pdf_coord(self) -> float:
+        return self.get_pdf_coord_from_grid_coord(0)
+    
+    def get_max_pdf_coord(self) -> float:
+        return self.get_pdf_coord_from_grid_coord(self.num_total_blocks)

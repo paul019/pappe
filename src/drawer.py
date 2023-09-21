@@ -7,6 +7,9 @@ from src.models.axis_direction import AxisDirection
 from src.axis_transformer_maker.linear_axis_transformer_maker import (
     LinearAxisTranformerMaker,
 )
+from src.axis_transformer_maker.logarithmic_axis_transformer_maker import (
+    LogarithmicAxisTransformerMaker,
+)
 from src.linear_regressor import do_linear_regression
 
 INDICATOR_COLOR = (0, 0, 1)
@@ -34,7 +37,9 @@ class Drawer:
         self.regression_config = regression_config
 
         self.a = PdfAnnotator(grid_config["paper"]["file"])
-        self.a.set_page_dimensions((grid_config["paper"]["width"], grid_config["paper"]["height"]), 0)
+        self.a.set_page_dimensions(
+            (grid_config["paper"]["width"], grid_config["paper"]["height"]), 0
+        )
 
         if grid_config["x_axis"]["type"] == "linear":
             self.trafo_maker_x = LinearAxisTranformerMaker(
@@ -47,9 +52,16 @@ class Drawer:
                 x_axis_config["offset_exponent"],
                 x_axis_config["show_origin"],
             )
+        elif grid_config["x_axis"]["type"] == "logarithmic":
+            self.trafo_maker_x = LogarithmicAxisTransformerMaker(
+                AxisDirection.HORIZONTAL,
+                grid_config["grid"]["width"],
+                grid_config["grid"]["x"],
+                grid_config["x_axis"]["num_decades"],
+            )
         else:
             raise NotImplementedError
-        
+
         if grid_config["y_axis"]["type"] == "linear":
             self.trafo_maker_y = LinearAxisTranformerMaker(
                 AxisDirection.VERTICAL,
@@ -60,6 +72,13 @@ class Drawer:
                 y_axis_config["factors"],
                 y_axis_config["offset_exponent"],
                 y_axis_config["show_origin"],
+            )
+        elif grid_config["y_axis"]["type"] == "logarithmic":
+            self.trafo_maker_y = LogarithmicAxisTransformerMaker(
+                AxisDirection.VERTICAL,
+                grid_config["grid"]["height"],
+                grid_config["grid"]["y"],
+                grid_config["y_axis"]["num_decades"],
             )
         else:
             raise NotImplementedError
@@ -109,10 +128,10 @@ class Drawer:
                 self._draw_error_bar(m, AxisDirection.VERTICAL)
 
     def _draw_axes_numbers(self):
-        for c in self.trafo_x.get_axes_number_data_coords():
+        for c in self.trafo_x.get_axis_numbers_data_coords():
             self._draw_horizontal_axis_number(c)
 
-        for c in self.trafo_y.get_axes_number_data_coords():
+        for c in self.trafo_y.get_axis_numbers_data_coords():
             self._draw_vertical_axis_number(c)
 
     def _draw_error_bar(self, m: Measurement, axis: AxisDirection):
@@ -287,25 +306,21 @@ class Drawer:
     def _draw_axis(self, axis: AxisDirection):
         if axis == AxisDirection.HORIZONTAL:
             coords_start = (
-                self.trafo_x.get_pdf_coord_from_grid_coord(0),
+                self.trafo_x.get_min_pdf_coord(),
                 self.trafo_y.get_pdf_coord_of_axis(),
             )
             coords_end = (
-                self.trafo_x.get_pdf_coord_from_grid_coord(
-                    self.trafo_x.num_total_blocks
-                ),
+                self.trafo_x.get_max_pdf_coord(),
                 self.trafo_y.get_pdf_coord_of_axis(),
             )
         else:
             coords_start = (
                 self.trafo_x.get_pdf_coord_of_axis(),
-                self.trafo_y.get_pdf_coord_from_grid_coord(0),
+                self.trafo_y.get_min_pdf_coord(),
             )
             coords_end = (
                 self.trafo_x.get_pdf_coord_of_axis(),
-                self.trafo_y.get_pdf_coord_from_grid_coord(
-                    self.trafo_y.num_total_blocks
-                ),
+                self.trafo_y.get_max_pdf_coord(),
             )
 
         location = Location(points=[coords_start, coords_end], page=0)

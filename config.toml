@@ -1,4 +1,4 @@
-grid_variant = 2
+grid_variant = 3
 
 [x_axis]
 type = "linear"

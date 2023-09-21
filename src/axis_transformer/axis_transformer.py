@@ -22,5 +22,11 @@ class AxisTransformer:
     def get_pdf_coord_of_axis(self) -> float:
         raise NotImplementedError
     
-    def get_axes_number_data_coords(self) -> list[float]:
+    def get_min_pdf_coord(self) -> float:
+        raise NotImplementedError
+    
+    def get_max_pdf_coord(self) -> float:
+        raise NotImplementedError
+    
+    def get_axis_numbers_data_coords(self) -> list[float]:
         raise NotImplementedError
