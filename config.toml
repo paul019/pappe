@@ -1,9 +1,22 @@
-grid_variant = 1
+grid_variant = 3
 
-[factors]
-x = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
-y = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
+[data]
+files = ['data/data.csv', 'data/data2.csv']
 
-[origins]
-x = false
-y = false
+[x_axis]
+type = "linear"
+factors = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
+offset_exponent = 2
+show_origin = false
+
+[y_axis]
+type = "linear"
+factors = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
+offset_exponent = 2
+show_origin = false
+
+[linear_regression]
+print_parameters = false
+draw_curve_of_best_fit = false
+draw_error_curve_low_slope = false
+draw_error_curve_high_slope = false

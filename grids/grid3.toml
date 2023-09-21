@@ -1,13 +1,13 @@
 [paper]
-file = 'grids/grid1.pdf'
+file = 'grids/grid3.pdf'
 width = 4133
 height = 5846
 
 [grid]
-width = 3543
-height = 5318
-x = 406
-y = 264
+width = 3544
+height = 5160
+x = 333
+y = 343
 
 [x_axis]
 type = "linear"
@@ -15,9 +15,8 @@ num_blocks = 18
 num_tiny_blocks_per_block = 10
 
 [y_axis]
-type = "linear"
-num_blocks = 27
-num_tiny_blocks_per_block = 10
+type = "logarithmic"
+num_decades = 3
 
 [drawing]
 cross_size = 10
