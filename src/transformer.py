@@ -1,7 +1,9 @@
 import math
 from enum import Enum
+import copy
 
 from src.measurement import Measurement
+from src.linear_regressor import do_linear_regression
 
 
 class Axis(Enum):
@@ -19,20 +21,24 @@ class Transformer:
     def __init__(self, grid_config, factors_config, origins_config) -> None:
         self.grid_config = grid_config
 
-        self.factors_x = factors_config['x']
-        self.factors_y = factors_config['y']
+        self.factors_x = factors_config["x"]
+        self.factors_y = factors_config["y"]
         self.factors_x.sort()
         self.factors_y.sort()
 
-        self.should_contain_origin_x = origins_config['x']
-        self.should_contain_origin_y = origins_config['y']
+        self.should_contain_origin_x = origins_config["x"]
+        self.should_contain_origin_y = origins_config["y"]
 
-        self.num_total_x_blocks = grid_config['num_x_blocks'] * \
-            grid_config['num_x_tiny_blocks_per_block']
-        self.num_total_y_blocks = grid_config['num_y_blocks'] *\
-            grid_config['num_y_tiny_blocks_per_block']
+        self.num_total_x_blocks = (
+            grid_config["num_x_blocks"] * grid_config["num_x_tiny_blocks_per_block"]
+        )
+        self.num_total_y_blocks = (
+            grid_config["num_y_blocks"] * grid_config["num_y_tiny_blocks_per_block"]
+        )
 
     def analyze_and_offset_measurements(self, measurements: list[Measurement]):
+        self.measurements = copy.deepcopy(measurements)
+
         # Min/Max values
         x_values = [m.x for m in measurements]
         y_values = [m.y for m in measurements]
@@ -60,9 +66,11 @@ class Transformer:
 
         # Estimate offset and scale
         offset_x, scale_x = self._calc_offset_estimate_scale(
-            Axis.HORIZONTAL, min_x, max_x)
+            Axis.HORIZONTAL, min_x, max_x
+        )
         offset_y, scale_y = self._calc_offset_estimate_scale(
-            Axis.VERTICAL, min_y, max_y)
+            Axis.VERTICAL, min_y, max_y
+        )
 
         # Refine scale
         scale_x = self._refine_scale(scale_x, self.factors_x)
@@ -108,7 +116,9 @@ class Transformer:
 
         return points_offset
 
-    def _calc_offset_estimate_scale(self, axis: Axis,  min_value: float, max_value: float) -> tuple[float, float]:
+    def _calc_offset_estimate_scale(
+        self, axis: Axis, min_value: float, max_value: float
+    ) -> tuple[float, float]:
         """
         Calculates the final offset and gives a first estimate for scale.
 
@@ -116,13 +126,13 @@ class Transformer:
         Scale: ratio between data scaling and grid scaling
         """
         if axis == Axis.HORIZONTAL:
-            num_blocks = self.grid_config['num_x_blocks']
+            num_blocks = self.grid_config["num_x_blocks"]
             num_total_blocks = self.num_total_x_blocks
-            num_tiny_blocks_per_block = self.grid_config['num_x_tiny_blocks_per_block']
+            num_tiny_blocks_per_block = self.grid_config["num_x_tiny_blocks_per_block"]
         else:
-            num_blocks = self.grid_config['num_y_blocks']
+            num_blocks = self.grid_config["num_y_blocks"]
             num_total_blocks = self.num_total_y_blocks
-            num_tiny_blocks_per_block = self.grid_config['num_y_tiny_blocks_per_block']
+            num_tiny_blocks_per_block = self.grid_config["num_y_tiny_blocks_per_block"]
 
         if min_value >= 0:
             offset = 0
@@ -131,12 +141,12 @@ class Transformer:
             offset = num_total_blocks
             scale = num_total_blocks / (-min_value)
         else:
-            offset = min_value/(min_value-max_value) * num_blocks
-            offset = math.ceil(offset) if offset < num_blocks/2 \
-                else math.floor(offset)
+            offset = min_value / (min_value - max_value) * num_blocks
+            offset = (
+                math.ceil(offset) if offset < num_blocks / 2 else math.floor(offset)
+            )
             offset *= num_tiny_blocks_per_block
-            scale = min(offset / (-min_value),
-                        (num_total_blocks - offset) / max_value)
+            scale = min(offset / (-min_value), (num_total_blocks - offset) / max_value)
 
         return offset, scale
 
@@ -151,23 +161,38 @@ class Transformer:
 
         return scale_refined
 
+    def get_pdf_coords_from_offset_data_point(
+        self, x: float, y: float
+    ) -> tuple[float, float]:
+        grid_x = (x * self.scale_x + self.offset_x) * self.grid_config[
+            "width"
+        ] / self.num_total_x_blocks + self.grid_config["x"]
+        grid_y = (y * self.scale_y + self.offset_y) * self.grid_config[
+            "height"
+        ] / self.num_total_y_blocks + self.grid_config["y"]
+        return grid_x, grid_y
+
     def get_pdf_coords_from_data_point(self, x: float, y: float) -> tuple[float, float]:
-        grid_x = (x*self.scale_x+self.offset_x) * \
-            self.grid_config['width'] / \
-            self.num_total_x_blocks + self.grid_config['x']
-        grid_y = (y*self.scale_y+self.offset_y) * \
-            self.grid_config['height'] / \
-            self.num_total_y_blocks + self.grid_config['y']
+        return self.get_pdf_coords_from_offset_data_point(
+            x - self.points_offset_x, y - self.points_offset_y
+        )
+
+    def get_pdf_coords_from_grid_coords(
+        self, x: float, y: float
+    ) -> tuple[float, float]:
+        grid_x = (
+            x * self.grid_config["width"] / self.num_total_x_blocks
+            + self.grid_config["x"]
+        )
+        grid_y = (
+            y * self.grid_config["height"] / self.num_total_y_blocks
+            + self.grid_config["y"]
+        )
         return grid_x, grid_y
 
-    def _get_pdf_coords_from_grid_coords(self, x: float, y: float) -> tuple[float, float]:
-        grid_x = x * self.grid_config['width'] / \
-            self.num_total_x_blocks + self.grid_config['x']
-        grid_y = y * self.grid_config['height'] / \
-            self.num_total_y_blocks + self.grid_config['y']
-        return grid_x, grid_y
-
-    def get_pdf_coords_for_point_on_axis(self, axis: Axis, value: float) -> tuple[float, float]:
+    def get_pdf_coords_for_point_on_axis(
+        self, axis: Axis, value: float
+    ) -> tuple[float, float]:
         if axis == Axis.VERTICAL:
             x = self.offset_x if self.should_contain_origin_x else 0
             y = value
@@ -175,11 +200,29 @@ class Transformer:
             x = value
             y = self.offset_y if self.should_contain_origin_y else 0
 
-        return self._get_pdf_coords_from_grid_coords(x, y)
+        return self.get_pdf_coords_from_grid_coords(x, y)
+
+    def get_offset_data_point_from_grid_coords(
+        self, x: float, y: float
+    ) -> tuple[float, float]:
+        return ((x - self.offset_x) / self.scale_x, (y - self.offset_y) / self.scale_y)
+
+    def get_data_point_from_grid_coords(
+        self, x: float, y: float
+    ) -> tuple[float, float]:
+        with_offset = self.get_offset_data_point_from_grid_coords(x, y)
+        return (
+            with_offset[0] + self.points_offset_x,
+            with_offset[1] + self.points_offset_y,
+        )
 
     def grid_coord_to_data_label(self, grid_coord: int, axis: Axis) -> float:
-        offset = self.offset_x if axis == Axis.HORIZONTAL else self.offset_y
-        scale = self.scale_x if axis == Axis.HORIZONTAL else self.scale_y
-        point_offset = self.points_offset_x if axis == Axis.HORIZONTAL else self.points_offset_y
+        if axis == Axis.HORIZONTAL:
+            label = self.get_data_point_from_grid_coords(grid_coord, 0)[0]
+            return label
+        else:
+            label = self.get_data_point_from_grid_coords(0, grid_coord)[1]
+            return label
 
-        return (grid_coord-offset)/scale + point_offset
+    def get_linear_regression(self):
+        return do_linear_regression(self.measurements)

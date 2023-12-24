@@ -7,3 +7,9 @@ y = [1, 1.5, 2, 3, 4, 5, 6, 8, 9]
 [origins]
 x = false
 y = false
+
+[linear_regression]
+print_parameters = true
+draw_curve_of_best_fit = true
+draw_error_curve_low_slope = false
+draw_error_curve_high_slope = false

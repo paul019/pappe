@@ -14,28 +14,47 @@ def parse_csv(path: str) -> list[Measurement]:
     measurements: list[Measurement] = []
 
     # open file
-    f = open(path, 'r')
+    f = open(path, "r")
     reader = csv.reader(f)
 
+    i = 0
+
     for row in reader:
-        x, y = float(row[0]), float(row[1])
-        m = Measurement(x, y)
+        try:
+            x, x_lower_error, x_upper_error = (
+                float(row[0]),
+                float(row[1]),
+                float(row[2]),
+            )
+            y, y_lower_error, y_upper_error = (
+                float(row[3]),
+                float(row[4]),
+                float(row[5]),
+            )
+            try:
+                hide_for_regression = row[6] == "hide"
+            except:
+                hide_for_regression = False
+            m = Measurement(
+                x,
+                x_lower_error,
+                x_upper_error,
+                y,
+                y_lower_error,
+                y_upper_error,
+                hide_for_regression,
+            )
 
-        # Symmetric error
-        if len(row) == 3:
-            error = float(row[2])
-            m.add_error_bounds(error, error)
+            measurements.append(m)
+        except:
+            if i != 0:
+                raise Exception("Wrong input format.")
 
-        # Asymmetric errors
-        if len(row) == 4:
-            lower_error, upper_error = float(row[2]), float(row[3])
-            m.add_error_bounds(lower_error, upper_error)
-
-        measurements.append(m)
+        i += 1
 
     return measurements
 
 
 def parse_config(path: str):
-    with open(path, 'rb') as f:
+    with open(path, "rb") as f:
         return tomllib.load(f)
